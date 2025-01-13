@@ -81,6 +81,17 @@ export class DatabaseService {
       )
     `);
 
+        await this.db!.exec(`
+        CREATE TABLE IF NOT EXISTS patients (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            date_of_birth TEXT NOT NULL,
+            address TEXT NOT NULL
+        )
+    `);
+
         await this.closeDatabase();
     }
 }
