@@ -37,4 +37,12 @@ export class PatientService {
 
         return await this.patientRepository.update(patientId, updatedPatient);
     }
+
+    async getProfile(patientId: number): Promise<PatientModel> {
+        const patient = await this.patientRepository.findById(patientId);
+        if (!patient) {
+            throw new Error("Patient not found");
+        }
+        return patient;
+    }
 }

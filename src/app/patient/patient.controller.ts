@@ -11,6 +11,7 @@ export class PatientController {
         // Define routes
         this.patientRouter.post('/', this.create.bind(this));
         this.patientRouter.put('/:patientId', this.update.bind(this));
+        this.patientRouter.get('/:patientId',this.getProfile.bind(this));
     }
 
     getRouter(): Router {
@@ -68,6 +69,16 @@ export class PatientController {
             res.status(200).json(updatedPatient);
         } catch (error) {
             res.status(500).json({error: error || "Failed to update patient"});
+        }
+    }
+
+    private async getProfile(req: Request, res: Response): Promise<void> {
+        try {
+            const {patientId} = req.params;
+            const patient = await this.patientService.getProfile(Number(patientId));
+            res.status(200).json(patient);
+        } catch (error) {
+            res.status(404).json({error: error || "Patient not found"});
         }
     }
 }
