@@ -33,5 +33,4 @@ export class Server {
     private onHttpServerListening(): void {
         console.log(`Server express started in ${config.env} mode (ip:${config.ip}, port:${config.port})`);
     }
-
 }

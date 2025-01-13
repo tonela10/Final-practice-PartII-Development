@@ -92,6 +92,17 @@ export class DatabaseService {
         )
     `);
 
+        await this.db!.exec(`
+        CREATE TABLE IF NOT EXISTS doctors (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            specialty TEXT NOT NULL,
+            license_number TEXT NOT NULL UNIQUE
+        );
+    `);
+
         await this.closeDatabase();
     }
 }

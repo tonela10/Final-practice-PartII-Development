@@ -1,0 +1,26 @@
+meta {
+  name: Create Doctor
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/doctor
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "securepassword",
+    "specialty": "Cardiology",
+    "licenseNumber": "AB12345"
+  }
+  
+}
