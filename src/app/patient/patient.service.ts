@@ -22,4 +22,19 @@ export class PatientService {
         // Create the patient
         return await this.patientRepository.create(patientData);
     }
+
+    async update(patientId: number, updateData: Partial<PatientModel>): Promise<PatientModel> {
+        const patient = await this.patientRepository.findById(patientId);
+
+        if (!patient) {
+            throw new Error("Patient not found");
+        }
+
+        const updatedPatient = {
+            ...patient,
+            ...updateData, // Merge the existing patient with the new data
+        };
+
+        return await this.patientRepository.update(patientId, updatedPatient);
+    }
 }

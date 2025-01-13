@@ -10,6 +10,7 @@ export class PatientController {
     constructor(private readonly patientService: PatientService) {
         // Define routes
         this.patientRouter.post('/', this.create.bind(this));
+        this.patientRouter.put('/:patientId', this.update.bind(this));
     }
 
     getRouter(): Router {
@@ -54,6 +55,19 @@ export class PatientController {
 
             // Send an appropriate error response
             res.status(500).json({error: "Failed to create patient"});
+        }
+    }
+
+    private async update(req: Request, res: Response): Promise<void> {
+        try {
+            const {patientId} = req.params;
+            const {name, email, address} = req.body;
+
+            const updatedPatient = await this.patientService.update(Number(patientId), {name, email, address});
+
+            res.status(200).json(updatedPatient);
+        } catch (error) {
+            res.status(500).json({error: error || "Failed to update patient"});
         }
     }
 }
