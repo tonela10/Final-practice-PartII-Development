@@ -1,0 +1,32 @@
+meta {
+  name: Update medical-record
+  type: http
+  seq: 16
+}
+
+put {
+  url: http://localhost:3000/api/medical-record/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "diagnosis": "Updated Diagnosis",
+    "prescriptions": ["Updated Medicine A"],
+    "notes": "Updated notes",
+    "testResults": [
+      {
+        "testName": "Updated Blood Test",
+        "result": "Improved",
+        "date": "2025-01-16T10:00:00Z"
+      }
+    ],
+    "ongoingTreatments": ["Updated Treatment"]
+  }
+  
+}
