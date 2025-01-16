@@ -19,4 +19,17 @@ export class DoctorService {
 
         return await this.doctorRepository.create(doctorData);
     }
+
+    async updateProfile(doctorId: number, updates: Partial<DoctorModel>): Promise<DoctorModel> {
+        const existingDoctor = await this.doctorRepository.update(doctorId, updates);
+        return existingDoctor;
+    }
+
+    async getProfile(doctorId: number): Promise<DoctorModel> {
+        const doctor = await this.doctorRepository.findById(doctorId);
+        if (!doctor) {
+            throw new Error("Doctor not found");
+        }
+        return doctor;
+    }
 }
