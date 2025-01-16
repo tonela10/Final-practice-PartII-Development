@@ -111,4 +111,35 @@ export class MedicalRecordRepository {
             updatedAt: updatedRecord.updatedAt,
         }
     }
+
+    async getById(recordId: number): Promise<MedicalRecordModel | null> {
+        const db = await this.databaseService.openDatabase();
+
+        // Fetch the main medical record
+        const medicalRecord = await db.get(
+            `SELECT *
+             FROM medical_records
+             WHERE recordId = ?`,
+            [recordId]
+        );
+
+        if (!medicalRecord) {
+            return null; // Record not found
+        }
+
+        // Fetch associated test results
+        const testResults: TestResult[] = await db.all(
+            `SELECT testName, result, date
+             FROM test_results
+             WHERE recordId = ?`,
+            [recordId]
+        );
+
+        return {
+            ...medicalRecord,
+            prescriptions: JSON.parse(medicalRecord.prescriptions),
+            ongoingTreatments: JSON.parse(medicalRecord.ongoingTreatments),
+            testResults,
+        };
+    }
 }
