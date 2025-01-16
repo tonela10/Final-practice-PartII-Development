@@ -60,4 +60,28 @@ export class AdminRepository {
 
         return admin || null;
     }
+
+    async findById(adminId: number): Promise<AdminModel | null> {
+        const db = await this.databaseService.openDatabase();
+
+        const row = await db.get(
+            `
+        SELECT id, name, email
+        FROM admins
+        WHERE id = ?
+    `,
+            [adminId]
+        );
+
+        if (!row) {
+            return null; // Admin not found
+        }
+
+        return {
+            id: row.id,
+            name: row.name,
+            email: row.email,
+        };
+    }
+
 }

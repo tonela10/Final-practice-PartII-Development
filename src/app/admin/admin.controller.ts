@@ -9,7 +9,7 @@ export class AdminController {
     constructor(private readonly adminService: AdminService) {
         this.adminRouter.post("/", this.createAdmin.bind(this));
         this.adminRouter.put("/:adminId", this.updateAdmin.bind(this));
-
+        this.adminRouter.get("/:adminId", this.getAdminProfile.bind(this));
     }
 
     getRouter(): Router {
@@ -59,6 +59,28 @@ export class AdminController {
                 id: updatedAdmin.id,
                 name: updatedAdmin.name,
                 email: updatedAdmin.email,
+            });
+        } catch (error) {
+            // @ts-ignore
+            if (error.message === "Admin not found") {
+                // @ts-ignore
+                res.status(404).json({ error: error.message });
+            } else {
+                res.status(500).json({ error: "Internal Server Error" });
+            }
+        }
+    }
+
+    private async getAdminProfile(req: Request, res: Response): Promise<void> {
+        try {
+            const { adminId } = req.params;
+
+            const admin = await this.adminService.getAdminProfile(Number(adminId));
+
+            res.status(200).json({
+                id: admin.id,
+                name: admin.name,
+                email: admin.email,
             });
         } catch (error) {
             // @ts-ignore

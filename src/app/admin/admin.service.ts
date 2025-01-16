@@ -27,4 +27,13 @@ export class AdminService {
         return updatedAdmin;
     }
 
+    async getAdminProfile(adminId: number): Promise<AdminModel> {
+        const admin = await this.adminRepository.findById(adminId);
+
+        if (!admin) {
+            throw new Error("Admin not found");
+        }
+
+        return admin;
+    }
 }
