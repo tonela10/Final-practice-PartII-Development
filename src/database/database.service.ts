@@ -138,6 +138,13 @@ export class DatabaseService {
         description TEXT
     );
 `);
+        await this.db!.exec(`
+        CREATE TABLE IF NOT EXISTS departments (
+            departmentId INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT
+    );
+`);
 
         await this.closeDatabase();
     }
