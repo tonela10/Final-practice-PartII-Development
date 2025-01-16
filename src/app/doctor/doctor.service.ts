@@ -21,8 +21,7 @@ export class DoctorService {
     }
 
     async updateProfile(doctorId: number, updates: Partial<DoctorModel>): Promise<DoctorModel> {
-        const existingDoctor = await this.doctorRepository.update(doctorId, updates);
-        return existingDoctor;
+        return await this.doctorRepository.update(doctorId, updates);
     }
 
     async getProfile(doctorId: number): Promise<DoctorModel> {
