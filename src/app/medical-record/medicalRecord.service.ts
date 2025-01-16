@@ -9,4 +9,8 @@ export class MedicalRecordService {
     async create(record: MedicalRecordModel): Promise<MedicalRecordModel> {
         return this.medicalRecordRepository.create(record);
     }
+
+    async update(recordId: number, updates: Partial<MedicalRecordModel>): Promise<MedicalRecordModel> {
+        return this.medicalRecordRepository.update(recordId, updates);
+    }
 }

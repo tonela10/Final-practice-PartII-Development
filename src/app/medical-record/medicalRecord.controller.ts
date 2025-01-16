@@ -9,6 +9,7 @@ export class MedicalRecordController {
 
     constructor(private readonly medicalRecordService: MedicalRecordService) {
         this.medicalRecordRouter.post("/", this.create.bind(this));
+        this.medicalRecordRouter.put("/:recordId", this.update.bind(this));
     }
 
     getRouter(): Router {
@@ -49,6 +50,31 @@ export class MedicalRecordController {
         } catch (error) {
             // @ts-ignore
             res.status(500).json({ error: `Failed to create medical record: ${error.message}` });
+        }
+    }
+
+    private async update(req: Request, res: Response): Promise<void> {
+        try {
+            const recordId = parseInt(req.params.recordId, 10);
+            const { diagnosis, prescriptions, notes, testResults, ongoingTreatments } = req.body;
+
+            if (!recordId || isNaN(recordId)) {
+                res.status(400).json({ error: "Invalid record ID" });
+                return;
+            }
+
+            const updatedRecord = await this.medicalRecordService.update(recordId, {
+                diagnosis,
+                prescriptions,
+                notes,
+                testResults,
+                ongoingTreatments,
+            });
+
+            res.status(200).json(updatedRecord);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to update medical record: ${error.message}` });
         }
     }
 }

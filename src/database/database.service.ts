@@ -108,7 +108,7 @@ export class DatabaseService {
 `);
 
         await this.db!.exec(`
-    CREATE TABLE medical_records (
+    CREATE TABLE IF NOT EXISTS medical_records  (
         recordId INTEGER PRIMARY KEY AUTOINCREMENT,
         patientId INTEGER NOT NULL,
         doctorId INTEGER NOT NULL,
@@ -116,12 +116,13 @@ export class DatabaseService {
         prescriptions TEXT NOT NULL,
         notes TEXT,
         ongoingTreatments TEXT NOT NULL,
-        createdAt DATETIME NOT NULL
+        createdAt DATETIME NOT NULL,
+        updatedAt DATETIME
     )
 `);
 
          await this.db!.exec(`
-    CREATE TABLE test_results (
+    CREATE TABLE IF NOT EXISTS test_results (
         testResultId INTEGER PRIMARY KEY AUTOINCREMENT,
         recordId INTEGER NOT NULL,
         testName TEXT NOT NULL,
