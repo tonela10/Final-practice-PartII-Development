@@ -1,6 +1,6 @@
-import { Request, Response, Router } from "express";
-import { Service } from "typedi";
-import { AppointmentService } from "./appointment.service";
+import {Request, Response, Router} from "express";
+import {Service} from "typedi";
+import {AppointmentService} from "./appointment.service";
 
 @Service()
 export class AppointmentController {
@@ -9,6 +9,7 @@ export class AppointmentController {
     constructor(private readonly appointmentService: AppointmentService) {
         this.appointmentRouter.post("/", this.bookAppointment.bind(this));
         this.appointmentRouter.delete("/:appointmentId", this.cancelAppointment.bind(this));
+        this.appointmentRouter.put("/:appointmentId", this.rescheduleAppointment.bind(this));
     }
 
     getRouter(): Router {
@@ -17,7 +18,7 @@ export class AppointmentController {
 
     private async bookAppointment(req: Request, res: Response): Promise<void> {
         try {
-            const { patientId, doctorId, appointmentDate, reason } = req.body;
+            const {patientId, doctorId, appointmentDate, reason} = req.body;
 
             const appointment = await this.appointmentService.bookAppointment(
                 patientId,
@@ -29,13 +30,13 @@ export class AppointmentController {
             res.status(201).json(appointment);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: "Internal Server Error", error2: error.message });
+            res.status(500).json({error: "Internal Server Error", error2: error.message});
         }
     }
 
     private async cancelAppointment(req: Request, res: Response): Promise<void> {
         try {
-            const { appointmentId } = req.params;
+            const {appointmentId} = req.params;
 
             const result = await this.appointmentService.cancelAppointment(Number(appointmentId));
 
@@ -45,7 +46,26 @@ export class AppointmentController {
             });
         } catch (error) {
             // @ts-ignore
-            res.status(400).json({ error: error.message });
+            res.status(400).json({error: error.message});
         }
     }
+
+    private async rescheduleAppointment(req: Request, res: Response): Promise<void> {
+        try {
+            const {appointmentId} = req.params;
+            const {appointmentDate} = req.body;
+
+            const updatedAppointment = await this.appointmentService.rescheduleAppointment(
+                Number(appointmentId),
+                appointmentDate
+            );
+
+            res.status(200).json(updatedAppointment);
+        } catch (error) {
+            // @ts-ignore
+            res.status(400).json({error: error.message});
+        }
+    }
+
+
 }

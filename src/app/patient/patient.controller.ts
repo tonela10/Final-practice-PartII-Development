@@ -2,16 +2,21 @@ import {Service} from "typedi";
 import {Request, Response, Router} from "express";
 import {PatientService} from "./patient.service";
 import {PatientModel} from "./patient.model";
+import {AppointmentService} from "../appointment/appointment.service";
 
 @Service()
 export class PatientController {
     private patientRouter = Router();
 
-    constructor(private readonly patientService: PatientService) {
+    constructor(private readonly patientService: PatientService,
+                private readonly appointmentService: AppointmentService ) {
         // Define routes
         this.patientRouter.post('/', this.create.bind(this));
         this.patientRouter.put('/:patientId', this.update.bind(this));
         this.patientRouter.get('/:patientId',this.getProfile.bind(this));
+
+        // Forward the appointment management to the AppointmentController
+        this.patientRouter.get('/:patientId/appointment', this.getAppointments.bind(this));
     }
 
     getRouter(): Router {
@@ -79,6 +84,16 @@ export class PatientController {
             res.status(200).json(patient);
         } catch (error) {
             res.status(404).json({error: error || "Patient not found"});
+        }
+    }
+
+    private async getAppointments(req: Request, res: Response): Promise<void> {
+        try {
+            const {patientId} = req.params;
+            const appointments = await this.appointmentService.getAppointments(Number(patientId));
+            res.status(200).json(appointments); // Forward the appointments to the response
+        } catch (error) {
+            res.status(404).json({error: "Appointments not found"});
         }
     }
 }
