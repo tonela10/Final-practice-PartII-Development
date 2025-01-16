@@ -9,4 +9,8 @@ export class AvailabilityService {
     async setAvailability(availability: AvailabilityModel): Promise<AvailabilityModel> {
         return this.availabilityRepository.create(availability);
     }
+
+    async getAvailabilityByDoctor(doctorId: number): Promise<AvailabilityModel[]> {
+        return this.availabilityRepository.getAvailabilityByDoctor(doctorId);
+    }
 }

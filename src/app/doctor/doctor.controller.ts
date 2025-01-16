@@ -13,7 +13,10 @@ export class DoctorController {
         this.doctorRouter.post('/', this.create.bind(this));
         this.doctorRouter.put('/:doctorId',this.updateProfile.bind(this));
         this.doctorRouter.get('/:doctorId', this.getProfile.bind(this));
+
         this.doctorRouter.post('/:doctorId/availability', this.setAvailability.bind(this));
+        this.doctorRouter.get('/:doctorId/availability', this.getAvailability.bind(this));
+
     }
 
     getRouter(): Router {
@@ -110,6 +113,32 @@ export class DoctorController {
         } catch (error) {
             // @ts-ignore
             res.status(500).json({ error:  `Failed to set availability: ${error.message}` });
+        }
+    }
+
+    private async getAvailability(req: Request, res: Response): Promise<void> {
+        try {
+            const doctorId = parseInt(req.params.doctorId, 10);
+
+            if (!doctorId || isNaN(doctorId)) {
+                res.status(400).json({ error: "Invalid doctor ID" });
+                return;
+            }
+
+            // Get availability from the service
+            const availability = await this.availabilityService.getAvailabilityByDoctor(doctorId);
+
+            // If no availability found
+            if (!availability || availability.length === 0) {
+                res.status(404).json({ error: "No availability found for this doctor" });
+                return;
+            }
+
+            // Respond with the availability data
+            res.status(200).json(availability);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to retrieve availability: ${error.message}` });
         }
     }
 }
