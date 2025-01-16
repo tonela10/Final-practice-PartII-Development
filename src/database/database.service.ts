@@ -112,10 +112,10 @@ export class DatabaseService {
         recordId INTEGER PRIMARY KEY AUTOINCREMENT,
         patientId INTEGER NOT NULL,
         doctorId INTEGER NOT NULL,
-        diagnosis TEXT NOT NULL,
-        prescriptions TEXT NOT NULL,
+        diagnosis TEXT ,
+        prescriptions TEXT ,
         notes TEXT,
-        ongoingTreatments TEXT NOT NULL,
+        ongoingTreatments TEXT,
         createdAt DATETIME NOT NULL,
         updatedAt DATETIME
     )

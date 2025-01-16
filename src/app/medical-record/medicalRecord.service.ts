@@ -18,4 +18,8 @@ export class MedicalRecordService {
     async getById(recordId: number): Promise<MedicalRecordModel | null> {
         return this.medicalRecordRepository.getById(recordId);
     }
+
+    async getByPatientId(patientId: number): Promise<MedicalRecordModel[]> {
+        return this.medicalRecordRepository.getByPatientId(patientId);
+    }
 }

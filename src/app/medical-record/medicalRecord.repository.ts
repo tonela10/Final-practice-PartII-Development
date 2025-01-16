@@ -142,4 +142,35 @@ export class MedicalRecordRepository {
             testResults,
         };
     }
+
+    async getByPatientId(patientId: number): Promise<MedicalRecordModel[]> {
+        const db = await this.databaseService.openDatabase();
+
+        // Fetch the main medical records
+        const medicalRecords = await db.all(
+            `SELECT * FROM medical_records WHERE patientId = ?`,
+            [patientId]
+        );
+
+        if (!medicalRecords || medicalRecords.length === 0) {
+            return []; // No records found
+        }
+
+        // Fetch associated test results for each medical record
+        return await Promise.all(
+            medicalRecords.map(async (record: any) => {
+                const testResults: TestResult[] = await db.all(
+                    `SELECT testName, result, date FROM test_results WHERE recordId = ?`,
+                    [record.recordId]
+                );
+
+                return {
+                    ...record,
+                    prescriptions: JSON.parse(record.prescriptions),
+                    ongoingTreatments: JSON.parse(record.ongoingTreatments),
+                    testResults,
+                };
+            })
+        );
+    }
 }

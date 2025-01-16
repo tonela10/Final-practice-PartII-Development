@@ -3,20 +3,23 @@ import {Request, Response, Router} from "express";
 import {PatientService} from "./patient.service";
 import {PatientModel} from "./patient.model";
 import {AppointmentService} from "../../appointment/appointment.service";
+import {MedicalRecordService} from "../../medical-record/medicalRecord.service";
 
 @Service()
 export class PatientController {
     private patientRouter = Router();
 
     constructor(private readonly patientService: PatientService,
-                private readonly appointmentService: AppointmentService ) {
+                private readonly appointmentService: AppointmentService,
+                private readonly medicalRecordService: MedicalRecordService,
+    ) {
         // Define routes
         this.patientRouter.post('/', this.create.bind(this));
         this.patientRouter.put('/:patientId', this.update.bind(this));
         this.patientRouter.get('/:patientId',this.getProfile.bind(this));
 
-        // Forward the appointment management to the AppointmentController
         this.patientRouter.get('/:patientId/appointment', this.getAppointments.bind(this));
+        this.patientRouter.get("/:patientId/medical-record", this.getMedicalRecordByPatientId.bind(this));
     }
 
     getRouter(): Router {
@@ -94,6 +97,29 @@ export class PatientController {
             res.status(200).json(appointments); // Forward the appointments to the response
         } catch (error) {
             res.status(404).json({error: "Appointments not found"});
+        }
+    }
+
+    private async getMedicalRecordByPatientId(req: Request, res: Response): Promise<void> {
+        try {
+            const patientId = parseInt(req.params.patientId, 10);
+
+            if (!patientId || isNaN(patientId)) {
+                res.status(400).json({ error: "Invalid patient ID" });
+                return;
+            }
+
+            const medicalRecords = await this.medicalRecordService.getByPatientId(patientId);
+
+            if (medicalRecords.length === 0) {
+                res.status(404).json({ error: "No medical records found for this patient" });
+                return;
+            }
+
+            res.status(200).json(medicalRecords);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to fetch medical records: ${error.message}` });
         }
     }
 }
