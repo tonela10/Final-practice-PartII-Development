@@ -107,6 +107,29 @@ export class DatabaseService {
     )
 `);
 
+        await this.db!.exec(`
+    CREATE TABLE medical_records (
+        recordId INTEGER PRIMARY KEY AUTOINCREMENT,
+        patientId INTEGER NOT NULL,
+        doctorId INTEGER NOT NULL,
+        diagnosis TEXT NOT NULL,
+        prescriptions TEXT NOT NULL,
+        notes TEXT,
+        ongoingTreatments TEXT NOT NULL,
+        createdAt DATETIME NOT NULL
+    )
+`);
+
+         await this.db!.exec(`
+    CREATE TABLE test_results (
+        testResultId INTEGER PRIMARY KEY AUTOINCREMENT,
+        recordId INTEGER NOT NULL,
+        testName TEXT NOT NULL,
+        result TEXT NOT NULL,
+        date DATETIME NOT NULL,
+        FOREIGN KEY (recordId) REFERENCES medical_records(recordId)
+    )
+`);
 
         await this.closeDatabase();
     }

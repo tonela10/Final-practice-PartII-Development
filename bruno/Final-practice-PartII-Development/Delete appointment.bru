@@ -1,0 +1,23 @@
+meta {
+  name: Delete appointment
+  type: http
+  seq: 8
+}
+
+delete {
+  url: http://localhost:3000/api/appointment/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+      "message": "Appointment canceled successfully",
+      "appointmentId": 1
+  }
+  
+}

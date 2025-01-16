@@ -1,0 +1,34 @@
+meta {
+  name: Create medical-report
+  type: http
+  seq: 15
+}
+
+post {
+  url: http://localhost:3000/api/medical-records
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "patientId": 1,
+    "doctorId": 2,
+    "diagnosis": "Hypertension",
+    "prescriptions": ["Medicine A", "Medicine B"],
+    "notes": "Patient is responding well to treatment.",
+    "testResults": [
+      {
+        "testName": "Blood Test",
+        "result": "Normal",
+        "date": "2025-01-15T10:00:00Z"
+      }
+    ],
+    "ongoingTreatments": ["Physical Therapy"]
+  }
+  
+}

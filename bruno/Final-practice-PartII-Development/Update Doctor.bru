@@ -1,0 +1,23 @@
+meta {
+  name: Update Doctor
+  type: http
+  seq: 1
+}
+
+put {
+  url: http://localhost:3000/api/doctor/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Dr. Jane Doe",
+    "email": "jane.doe@example.com",
+    "specialty": "Neurology"
+  }
+}

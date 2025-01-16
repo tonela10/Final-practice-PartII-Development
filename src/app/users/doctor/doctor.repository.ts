@@ -1,5 +1,5 @@
 import {Service} from "typedi";
-import {DatabaseService} from "../../database/database.service";
+import {DatabaseService} from "../../../database/database.service";
 import {DoctorModel} from "./doctor.model";
 
 @Service()

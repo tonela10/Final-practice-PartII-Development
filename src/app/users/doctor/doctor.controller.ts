@@ -1,9 +1,9 @@
 import {Service} from "typedi";
 import {Request, Response, Router} from "express";
 import {DoctorService} from "./doctor.service";
-import {AvailabilityModel} from "../availability/availability.model";
-import {AvailabilityService} from "../availability/availability.service";
-import {AppointmentService} from "../appointment/appointment.service";
+import {AvailabilityModel} from "../../availability/availability.model";
+import {AvailabilityService} from "../../availability/availability.service";
+import {AppointmentService} from "../../appointment/appointment.service";
 
 @Service()
 export class DoctorController {

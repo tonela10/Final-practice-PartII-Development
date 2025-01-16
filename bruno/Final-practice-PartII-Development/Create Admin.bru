@@ -1,0 +1,24 @@
+meta {
+  name: Create Admin
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/api/admin
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "email": "admin@example.com",
+    "password": "securepassword123"
+  }
+  
+}

@@ -1,0 +1,23 @@
+meta {
+  name: Update admin
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/api/admin/1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com"
+  }
+  
+}

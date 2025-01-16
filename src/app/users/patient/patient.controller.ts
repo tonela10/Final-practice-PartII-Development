@@ -2,7 +2,7 @@ import {Service} from "typedi";
 import {Request, Response, Router} from "express";
 import {PatientService} from "./patient.service";
 import {PatientModel} from "./patient.model";
-import {AppointmentService} from "../appointment/appointment.service";
+import {AppointmentService} from "../../appointment/appointment.service";
 
 @Service()
 export class PatientController {
