@@ -38,4 +38,8 @@ export class AppointmentService {
     public async getAppointments(patientId: number): Promise<AppointmentModel[]> {
         return this.appointmentRepository.getAppointmentsByPatientId(patientId);
     }
+
+    async getAppointmentsByDoctor(doctorId: number): Promise<AppointmentModel[]> {
+        return this.appointmentRepository.getAppointmentsByDoctor(doctorId);
+    }
 }

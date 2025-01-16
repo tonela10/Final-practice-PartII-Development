@@ -3,20 +3,25 @@ import {Request, Response, Router} from "express";
 import {DoctorService} from "./doctor.service";
 import {AvailabilityModel} from "../availability/availability.model";
 import {AvailabilityService} from "../availability/availability.service";
+import {AppointmentService} from "../appointment/appointment.service";
 
 @Service()
 export class DoctorController {
     private doctorRouter = Router();
 
-    constructor(private readonly doctorService: DoctorService,
-                private readonly availabilityService: AvailabilityService) {
+    constructor(
+        private readonly doctorService: DoctorService,
+        private readonly availabilityService: AvailabilityService,
+        private readonly appointmentService: AppointmentService) {
+
         this.doctorRouter.post('/', this.create.bind(this));
-        this.doctorRouter.put('/:doctorId',this.updateProfile.bind(this));
+        this.doctorRouter.put('/:doctorId', this.updateProfile.bind(this));
         this.doctorRouter.get('/:doctorId', this.getProfile.bind(this));
 
         this.doctorRouter.post('/:doctorId/availability', this.setAvailability.bind(this));
         this.doctorRouter.get('/:doctorId/availability', this.getAvailability.bind(this));
 
+        this.doctorRouter.get('/:doctorId/appointment', this.getAppointments.bind(this));
     }
 
     getRouter(): Router {
@@ -37,10 +42,10 @@ export class DoctorController {
     private async updateProfile(req: Request, res: Response): Promise<void> {
         try {
             const doctorId = parseInt(req.params.doctorId, 10);
-            const { name, email, specialty } = req.body;
+            const {name, email, specialty} = req.body;
 
             if (!doctorId || isNaN(doctorId)) {
-                res.status(400).json({ error: "Invalid doctor ID" });
+                res.status(400).json({error: "Invalid doctor ID"});
                 return;
             }
 
@@ -57,7 +62,7 @@ export class DoctorController {
                 specialty: updatedDoctor.specialty,
             });
         } catch (error) {
-            res.status(500).json({ error: error });
+            res.status(500).json({error: error});
         }
     }
 
@@ -66,7 +71,7 @@ export class DoctorController {
             const doctorId = parseInt(req.params.doctorId, 10);
 
             if (!doctorId || isNaN(doctorId)) {
-                res.status(400).json({ error: "Invalid doctor ID" });
+                res.status(400).json({error: "Invalid doctor ID"});
                 return;
             }
 
@@ -81,22 +86,23 @@ export class DoctorController {
             });
         } catch (error) {
             // @ts-ignore
-            if (error.message=== "Doctor not found") {
-                res.status(404).json({ error: "Doctor not found" });
+            if (error.message === "Doctor not found") {
+                res.status(404).json({error: "Doctor not found"});
             } else {
                 // @ts-ignore
-                res.status(500).json({ error: error.message });
+                res.status(500).json({error: error.message});
             }
         }
     }
+
     private async setAvailability(req: Request, res: Response): Promise<void> {
         try {
-            const { doctorId } = req.params;
-            const { startTime, endTime, days } = req.body;
+            const {doctorId} = req.params;
+            const {startTime, endTime, days} = req.body;
 
             // Validate required fields
             if (!startTime || !endTime || !days || !doctorId) {
-                res.status(400).json({ error: "Missing required fields" });
+                res.status(400).json({error: "Missing required fields"});
                 return;
             }
 
@@ -112,7 +118,7 @@ export class DoctorController {
             res.status(201).json(availability);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error:  `Failed to set availability: ${error.message}` });
+            res.status(500).json({error: `Failed to set availability: ${error.message}`});
         }
     }
 
@@ -121,7 +127,7 @@ export class DoctorController {
             const doctorId = parseInt(req.params.doctorId, 10);
 
             if (!doctorId || isNaN(doctorId)) {
-                res.status(400).json({ error: "Invalid doctor ID" });
+                res.status(400).json({error: "Invalid doctor ID"});
                 return;
             }
 
@@ -130,7 +136,7 @@ export class DoctorController {
 
             // If no availability found
             if (!availability || availability.length === 0) {
-                res.status(404).json({ error: "No availability found for this doctor" });
+                res.status(404).json({error: "No availability found for this doctor"});
                 return;
             }
 
@@ -138,7 +144,33 @@ export class DoctorController {
             res.status(200).json(availability);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to retrieve availability: ${error.message}` });
+            res.status(500).json({error: `Failed to retrieve availability: ${error.message}`});
+        }
+    }
+
+    private async getAppointments(req: Request, res: Response): Promise<void> {
+        try {
+            const doctorId = parseInt(req.params.doctorId, 10);
+
+            if (!doctorId || isNaN(doctorId)) {
+                res.status(400).json({error: "Invalid doctor ID"});
+                return;
+            }
+
+            // Get appointments from the service
+            const appointments = await this.appointmentService.getAppointmentsByDoctor(doctorId);
+
+            // If no appointments found
+            if (!appointments || appointments.length === 0) {
+                res.status(404).json({error: "No appointments found for this doctor"});
+                return;
+            }
+
+            // Respond with the list of appointments
+            res.status(200).json(appointments);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({error: `Failed to retrieve appointments: ${error.message}`});
         }
     }
 }

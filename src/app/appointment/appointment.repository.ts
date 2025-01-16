@@ -89,4 +89,27 @@ export class AppointmentRepository {
             [patientId]
         );
     }
+
+    async getAppointmentsByDoctor(doctorId: number): Promise<AppointmentModel[]> {
+        const db = await this.databaseService.openDatabase();
+
+        // Query to fetch appointments for the specified doctorId
+        const rows = await db.all(
+            `
+            SELECT appointmentId, patientId, doctorId, appointmentDate, reason, status
+            FROM appointments
+            WHERE doctorId = ?
+        `,
+            [doctorId]
+        );
+
+        return rows.map((row: any) => ({
+            appointmentId: row.appointmentId,
+            patientId: row.patientId,
+            doctorId: row.doctorId,
+            appointmentDate: row.appointmentDate,
+            reason: row.reason,
+            status: row.status,
+        }));
+    }
 }
