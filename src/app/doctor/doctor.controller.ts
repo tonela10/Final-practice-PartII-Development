@@ -1,15 +1,19 @@
 import {Service} from "typedi";
 import {Request, Response, Router} from "express";
 import {DoctorService} from "./doctor.service";
+import {AvailabilityModel} from "../availability/availability.model";
+import {AvailabilityService} from "../availability/availability.service";
 
 @Service()
 export class DoctorController {
     private doctorRouter = Router();
 
-    constructor(private readonly doctorService: DoctorService) {
+    constructor(private readonly doctorService: DoctorService,
+                private readonly availabilityService: AvailabilityService) {
         this.doctorRouter.post('/', this.create.bind(this));
         this.doctorRouter.put('/:doctorId',this.updateProfile.bind(this));
         this.doctorRouter.get('/:doctorId', this.getProfile.bind(this));
+        this.doctorRouter.post('/:doctorId/availability', this.setAvailability.bind(this));
     }
 
     getRouter(): Router {
@@ -80,6 +84,32 @@ export class DoctorController {
                 // @ts-ignore
                 res.status(500).json({ error: error.message });
             }
+        }
+    }
+    private async setAvailability(req: Request, res: Response): Promise<void> {
+        try {
+            const { doctorId } = req.params;
+            const { startTime, endTime, days } = req.body;
+
+            // Validate required fields
+            if (!startTime || !endTime || !days || !doctorId) {
+                res.status(400).json({ error: "Missing required fields" });
+                return;
+            }
+
+            // Call the service to create availability
+            const availability: AvailabilityModel = await this.availabilityService.setAvailability({
+                doctorId: Number(doctorId),
+                startTime,
+                endTime,
+                days,
+            });
+
+            // Respond with the created availability
+            res.status(201).json(availability);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error:  `Failed to set availability: ${error.message}` });
         }
     }
 }

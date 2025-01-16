@@ -74,7 +74,7 @@ export class DatabaseService {
             license_number TEXT NOT NULL UNIQUE
         );
     `);
-        
+
         await this.db!.exec(`
     CREATE TABLE IF NOT EXISTS admins (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -95,6 +95,18 @@ export class DatabaseService {
         FOREIGN KEY(doctorId) REFERENCES doctors(id) ON DELETE CASCADE
     )
 `);
+
+        await this.db!.exec(`
+    CREATE TABLE IF NOT EXISTS doctor_availability (
+       availabilityId INTEGER PRIMARY KEY AUTOINCREMENT,
+       doctorId INTEGER NOT NULL,
+       startTime TEXT NOT NULL,
+       endTime TEXT NOT NULL,
+       days TEXT NOT NULL,  -- Store days as a JSON string
+       FOREIGN KEY(doctorId) REFERENCES doctors(id) ON DELETE CASCADE
+    )
+`);
+
 
         await this.closeDatabase();
     }
