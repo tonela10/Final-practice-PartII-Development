@@ -54,34 +54,6 @@ export class DatabaseService {
         await this.openDatabase();
 
         await this.db!.exec(`
-      CREATE TABLE IF NOT EXISTS company_types (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        type TEXT NOT NULL
-      )
-    `);
-
-        await this.db!.exec(`
-      CREATE TABLE IF NOT EXISTS companies (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        company_typeId INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        address TEXT,
-        phone TEXT,
-        cif TEXT,
-        active BOOLEAN DEFAULT(FALSE),
-        admin BOOLEAN DEFAULT(FALSE),
-        FOREIGN KEY(company_typeId) REFERENCES company_types(id) ON DELETE RESTRICT
-      )
-    `);
-
-        await this.db!.exec(`
-      CREATE TABLE IF NOT EXISTS audits (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        message TEXT NOT NULL
-      )
-    `);
-
-        await this.db!.exec(`
         CREATE TABLE IF NOT EXISTS patients (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -111,7 +83,18 @@ export class DatabaseService {
         password TEXT NOT NULL
     )
 `);
-
+        await this.db!.exec(`
+    CREATE TABLE IF NOT EXISTS appointments (
+        appointmentId INTEGER PRIMARY KEY AUTOINCREMENT,
+        patientId INTEGER NOT NULL,
+        doctorId INTEGER NOT NULL,
+        appointmentDate TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        status TEXT NOT NULL,
+        FOREIGN KEY(patientId) REFERENCES patients(id) ON DELETE CASCADE,
+        FOREIGN KEY(doctorId) REFERENCES doctors(id) ON DELETE CASCADE
+    )
+`);
 
         await this.closeDatabase();
     }
