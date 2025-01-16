@@ -70,7 +70,7 @@ export class DatabaseService {
             name TEXT NOT NULL,
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            specialty TEXT NOT NULL,
+            speialtyId INTEGER NOT NULL,
             license_number TEXT NOT NULL UNIQUE
         );
     `);
@@ -130,6 +130,13 @@ export class DatabaseService {
         date DATETIME NOT NULL,
         FOREIGN KEY (recordId) REFERENCES medical_records(recordId)
     )
+`);
+        await this.db!.exec(`
+    CREATE TABLE IF NOT EXISTS specialties (
+        specialtyId INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT
+    );
 `);
 
         await this.closeDatabase();
