@@ -1,15 +1,21 @@
 import { Service } from "typedi";
 import { Router, Request, Response } from "express";
 import { AdminService } from "./admin.service";
+import {UserService} from "../user.service";
 
 @Service()
 export class AdminController {
     private adminRouter = Router();
 
-    constructor(private readonly adminService: AdminService) {
+    constructor(
+        private readonly adminService: AdminService,
+        private readonly userService: UserService,
+    ) {
         this.adminRouter.post("/", this.createAdmin.bind(this));
         this.adminRouter.put("/:adminId", this.updateAdmin.bind(this));
         this.adminRouter.get("/:adminId", this.getAdminProfile.bind(this));
+
+        this.adminRouter.get('/searchUsers', this.searchUsers.bind(this));
     }
 
     getRouter(): Router {
@@ -93,4 +99,26 @@ export class AdminController {
         }
     }
 
+    private async searchUsers(req: Request, res: Response): Promise<void> {
+        try {
+            const { role, name, email } = req.query;
+
+            // Validate query parameters
+            if (!role && !name && !email) {
+                res.status(400).json({ error: "At least one search parameter (role, name, or email) is required." });
+                return;
+            }
+
+            const users = await this.userService.searchUsers({
+                role: role as string,
+                name: name as string,
+                email: email as string,
+            });
+
+            res.status(200).json(users);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to search users: ${error.message}` });
+        }
+    }
 }
