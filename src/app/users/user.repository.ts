@@ -1,15 +1,16 @@
 import { DatabaseService } from "../../database/database.service";
+import {Service} from "typedi";
 
+@Service()
 export class UserRepository {
     constructor(private readonly databaseService: DatabaseService) {}
 
     async searchUsers(filters: { role?: string; name?: string; email?: string }) {
         const db = await this.databaseService.openDatabase();
         const params: any[] = [];
-        let query = '';
+        let query;
         const roleFilter = filters.role?.toLowerCase();
 
-        // Role-based query logic
         if (roleFilter === 'admin') {
             query = `
                 SELECT id AS userId, name, email, 'Admin' AS role
@@ -29,7 +30,6 @@ export class UserRepository {
                          ${this.buildConditions(filters, params)}
             `;
         } else {
-            // If no role is specified, search across all tables
             query = `
                 SELECT id AS userId, name, email, 'Admin' AS role FROM admins
                                                                            ${this.buildConditions(filters, params)}
@@ -42,6 +42,7 @@ export class UserRepository {
             `;
         }
 
+        console.log(query); // Imprime la consulta para verificarla
         return await db.all(query, params);
     }
 
@@ -49,19 +50,16 @@ export class UserRepository {
     private buildConditions(filters: { role?: string; name?: string; email?: string }, params: any[]) {
         const conditions: string[] = [];
 
-        // Add filtering condition for 'name' if provided
         if (filters.name) {
             conditions.push("name LIKE ?");
             params.push(`%${filters.name}%`);
         }
 
-        // Add filtering condition for 'email' if provided
         if (filters.email) {
             conditions.push("email LIKE ?");
             params.push(`%${filters.email}%`);
         }
 
-        // Return condition string if conditions are present
         return conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : '';
     }
 }

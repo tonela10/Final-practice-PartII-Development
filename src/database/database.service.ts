@@ -65,16 +65,16 @@ export class DatabaseService {
     `);
 
         await this.db!.exec(`
-        CREATE TABLE IF NOT EXISTS doctors (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            speialtyId INTEGER NOT NULL,
-            license_number TEXT NOT NULL UNIQUE,
-            location TEXT NOT NULL,
-        );
-    `);
+          CREATE TABLE IF NOT EXISTS doctors (
+           id INTEGER PRIMARY KEY AUTOINCREMENT,
+           name TEXT NOT NULL,
+           email TEXT NOT NULL UNIQUE,
+           password TEXT NOT NULL,
+           specialtyId INTEGER NOT NULL,
+           license_number TEXT NOT NULL UNIQUE,
+           location TEXT NOT NULL
+            );
+        `);
 
         await this.db!.exec(`
     CREATE TABLE IF NOT EXISTS admins (

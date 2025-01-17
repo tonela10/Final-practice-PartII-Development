@@ -5,6 +5,7 @@ import {AvailabilityModel} from "../../availability/availability.model";
 import {AvailabilityService} from "../../availability/availability.service";
 import {AppointmentService} from "../../appointment/appointment.service";
 
+
 @Service()
 export class DoctorController {
     private doctorRouter = Router();
@@ -34,7 +35,9 @@ export class DoctorController {
     private async create(req: Request, res: Response): Promise<void> {
         try {
             const {name, email, password, specialty, licenseNumber} = req.body;
-            const doctor = await this.doctorService.create({name, email, password, specialty, licenseNumber});
+            const doctor = await this.doctorService.create({
+                location: "",
+                name, email, password, specialty, licenseNumber});
             res.status(201).json(doctor);
         } catch (error) {
             // @ts-ignore
