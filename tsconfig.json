@@ -9,7 +9,8 @@
     "skipLibCheck": true,                        // Skip type checking for declaration files
     "moduleResolution": "node",
     "experimentalDecorators": true,              // Enable experimental support for decorators
-    "emitDecoratorMetadata": true                // Emit metadata for decorators
+    "emitDecoratorMetadata": true ,               // Emit metadata for decorators
+    "types": ["jest", "supertest"]
   },
   "include": ["src/**/*"]                       // Include all .ts files in the src folder
 }
