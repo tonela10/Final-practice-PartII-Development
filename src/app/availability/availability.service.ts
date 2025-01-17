@@ -1,6 +1,6 @@
-import { Service } from "typedi";
-import { AvailabilityRepository } from "./availability.repository";
-import { AvailabilityModel } from "./availability.model";
+import {Service} from "typedi";
+import {AvailabilityRepository} from "./availability.repository";
+import {AvailabilityModel} from "./availability.model";
 
 @Service()
 export class AvailabilityService {

@@ -25,7 +25,7 @@ export class DoctorController {
         this.doctorRouter.get('/:doctorId/appointment', this.getAppointments.bind(this));
 
         this.doctorRouter.post('/:doctorId/specialties', this.associateSpecialty.bind(this));
-        this.doctorRouter.get('/:doctorId/specialties',this.getSpecialties.bind(this));
+        this.doctorRouter.get('/:doctorId/specialties', this.getSpecialties.bind(this));
     }
 
     getRouter(): Router {
@@ -37,7 +37,8 @@ export class DoctorController {
             const {name, email, password, specialty, licenseNumber} = req.body;
             const doctor = await this.doctorService.create({
                 location: "",
-                name, email, password, specialty, licenseNumber});
+                name, email, password, specialty, licenseNumber
+            });
             res.status(201).json(doctor);
         } catch (error) {
             // @ts-ignore
@@ -106,13 +107,11 @@ export class DoctorController {
             const {doctorId} = req.params;
             const {startTime, endTime, days} = req.body;
 
-            // Validate required fields
             if (!startTime || !endTime || !days || !doctorId) {
                 res.status(400).json({error: "Missing required fields"});
                 return;
             }
 
-            // Call the service to create availability
             const availability: AvailabilityModel = await this.availabilityService.setAvailability({
                 doctorId: Number(doctorId),
                 startTime,
@@ -120,7 +119,6 @@ export class DoctorController {
                 days,
             });
 
-            // Respond with the created availability
             res.status(201).json(availability);
         } catch (error) {
             // @ts-ignore
@@ -137,16 +135,13 @@ export class DoctorController {
                 return;
             }
 
-            // Get availability from the service
             const availability = await this.availabilityService.getAvailabilityByDoctor(doctorId);
 
-            // If no availability found
             if (!availability || availability.length === 0) {
                 res.status(404).json({error: "No availability found for this doctor"});
                 return;
             }
 
-            // Respond with the availability data
             res.status(200).json(availability);
         } catch (error) {
             // @ts-ignore
@@ -163,16 +158,13 @@ export class DoctorController {
                 return;
             }
 
-            // Get appointments from the service
             const appointments = await this.appointmentService.getAppointmentsByDoctor(doctorId);
 
-            // If no appointments found
             if (!appointments || appointments.length === 0) {
                 res.status(404).json({error: "No appointments found for this doctor"});
                 return;
             }
 
-            // Respond with the list of appointments
             res.status(200).json(appointments);
         } catch (error) {
             // @ts-ignore
@@ -182,12 +174,11 @@ export class DoctorController {
 
     async associateSpecialty(req: Request, res: Response): Promise<void> {
         try {
-            const { doctorId } = req.params;
-            const { specialtyIds } = req.body;
+            const {doctorId} = req.params;
+            const {specialtyIds} = req.body;
 
-            // Validate input
             if (!doctorId || !specialtyIds || !Array.isArray(specialtyIds) || specialtyIds.length !== 1) {
-                res.status(400).json({ error: "Doctor can be associated with exactly one specialty." });
+                res.status(400).json({error: "Doctor can be associated with exactly one specialty."});
                 return;
             }
 
@@ -196,38 +187,35 @@ export class DoctorController {
             const specialtyId = parseInt(specialtyIds[0], 10);
 
             if (isNaN(doctorIdInt) || isNaN(specialtyId)) {
-                res.status(400).json({ error: "Invalid doctorId or specialtyId." });
+                res.status(400).json({error: "Invalid doctorId or specialtyId."});
                 return;
             }
 
-            // Associate the doctor with the specialty
             const result = await this.doctorService.associateSpecialty(doctorIdInt, specialtyId);
 
             res.status(200).json(result);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to associate specialty: ${error.message}` });
+            res.status(500).json({error: `Failed to associate specialty: ${error.message}`});
         }
     }
 
     async getSpecialties(req: Request, res: Response): Promise<void> {
         try {
-            const { doctorId } = req.params;
+            const {doctorId} = req.params;
 
-            // Validate doctorId
             const doctorIdInt = parseInt(doctorId, 10);
             if (isNaN(doctorIdInt)) {
-                res.status(400).json({ error: "Invalid doctor ID" });
+                res.status(400).json({error: "Invalid doctor ID"});
                 return;
             }
 
-            // Get specialties for the doctor
             const specialties = await this.doctorService.getDoctorSpecialties(doctorIdInt);
 
             res.status(200).json(specialties);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to retrieve specialties: ${error.message}` });
+            res.status(500).json({error: `Failed to retrieve specialties: ${error.message}`});
         }
     }
 }

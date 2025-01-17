@@ -10,7 +10,8 @@ export class DoctorService {
         private readonly doctorRepository: DoctorRepository,
         private readonly specialtyRepository: SpecialtyRepository,
         private readonly availabilityRepository: AvailabilityRepository,
-        ) {}
+    ) {
+    }
 
     async create(doctorData: DoctorModel): Promise<DoctorModel> {
         const existingEmail = await this.doctorRepository.findByEmail(doctorData.email);
@@ -39,36 +40,30 @@ export class DoctorService {
     }
 
     async associateSpecialty(doctorId: number, specialtyId: number) {
-        // Ensure the doctor exists
         const doctor = await this.doctorRepository.getDoctorById(doctorId);
         if (!doctor) {
             throw new Error("Doctor not found.");
         }
 
-        // Ensure the specialty exists
         const specialty = await this.specialtyRepository.getSpecialtyById(specialtyId);
         if (!specialty) {
             throw new Error("Specialty not found.");
         }
 
-        // Associate the doctor with the specialty
         await this.doctorRepository.updateDoctorSpecialty(doctorId, specialtyId);
 
-        // Return the updated association
         return {
             doctorId,
             specialties: [specialty],
         };
     }
-    
+
     async getDoctorSpecialties(doctorId: number) {
-        // Ensure the doctor exists
         const doctor = await this.doctorRepository.getDoctorById(doctorId);
         if (!doctor) {
             throw new Error("Doctor not found.");
         }
 
-        // Fetch the associated specialty
         const specialty = await this.specialtyRepository.getSpecialtyById(doctor.specialtyId);
 
         return specialty
@@ -87,12 +82,10 @@ export class DoctorService {
         specialtyId?: number;
         location?: string;
     }) {
-        const { availability, specialtyId, location } = filters;
+        const {availability, specialtyId, location} = filters;
 
-        // Fetch doctors matching criteria
         const doctors = await this.doctorRepository.searchDoctors(filters);
 
-        // Include availability and specialty details
         return await Promise.all(
             doctors.map(async (doctor) => {
                 const availability = await this.availabilityRepository.getAvailabilityByDoctorId(doctor.id!);

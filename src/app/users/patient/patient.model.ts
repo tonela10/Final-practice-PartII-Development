@@ -1,5 +1,5 @@
-export interface PatientModel{
-    id?:number
+export interface PatientModel {
+    id?: number
     name: string;
     email: string;
     password: string;

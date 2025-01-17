@@ -1,7 +1,7 @@
 export interface AvailabilityModel {
-    availabilityId?: number;  // Optional, because it's auto-generated
+    availabilityId?: number;
     doctorId: number;
-    startTime: string;  // datetime string
-    endTime: string;    // datetime string
-    days: string[];     // array of days, e.g., ["Monday", "Wednesday", "Friday"]
+    startTime: string;
+    endTime: string;
+    days: string[];
 }

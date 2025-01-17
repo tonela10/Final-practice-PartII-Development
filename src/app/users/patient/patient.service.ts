@@ -4,7 +4,8 @@ import {PatientRepository} from "./patient.repository";
 
 @Service()
 export class PatientService {
-    constructor(private readonly patientRepository: PatientRepository) {}
+    constructor(private readonly patientRepository: PatientRepository) {
+    }
 
     /**
      * Creates a new patient.
@@ -13,13 +14,11 @@ export class PatientService {
      * @throws Error if a patient with the same email already exists.
      */
     async create(patientData: PatientModel): Promise<PatientModel> {
-        // Check if a patient with the same email already exists
         const existingPatient = await this.patientRepository.findByName(patientData.name);
         if (existingPatient) {
             throw new Error("Patient with this name already exists");
         }
 
-        // Create the patient
         return await this.patientRepository.create(patientData);
     }
 
@@ -32,7 +31,7 @@ export class PatientService {
 
         const updatedPatient = {
             ...patient,
-            ...updateData, // Merge the existing patient with the new data
+            ...updateData,
         };
 
         return await this.patientRepository.update(patientId, updatedPatient);

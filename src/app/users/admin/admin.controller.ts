@@ -1,6 +1,6 @@
-import { Service } from "typedi";
-import { Router, Request, Response } from "express";
-import { AdminService } from "./admin.service";
+import {Service} from "typedi";
+import {Request, Response, Router} from "express";
+import {AdminService} from "./admin.service";
 import {UserService} from "../user.service";
 
 @Service()
@@ -24,10 +24,10 @@ export class AdminController {
 
     private async createAdmin(req: Request, res: Response): Promise<void> {
         try {
-            const { name, email, password } = req.body;
+            const {name, email, password} = req.body;
 
             if (!name || !email || !password) {
-                res.status(400).json({ error: "Missing required fields" });
+                res.status(400).json({error: "Missing required fields"});
                 return;
             }
 
@@ -42,20 +42,20 @@ export class AdminController {
             // @ts-ignore
             if (error.message === "Admin with this email already exists") {
                 // @ts-ignore
-                res.status(409).json({ error: error.message });
+                res.status(409).json({error: error.message});
             } else {
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({error: "Internal Server Error"});
             }
         }
     }
 
     private async updateAdmin(req: Request, res: Response): Promise<void> {
         try {
-            const { adminId } = req.params;
-            const { name, email } = req.body;
+            const {adminId} = req.params;
+            const {name, email} = req.body;
 
             if (!name || !email) {
-                res.status(400).json({ error: "Missing required fields" });
+                res.status(400).json({error: "Missing required fields"});
                 return;
             }
 
@@ -70,16 +70,16 @@ export class AdminController {
             // @ts-ignore
             if (error.message === "Admin not found") {
                 // @ts-ignore
-                res.status(404).json({ error: error.message });
+                res.status(404).json({error: error.message});
             } else {
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({error: "Internal Server Error"});
             }
         }
     }
 
     private async getAdminProfile(req: Request, res: Response): Promise<void> {
         try {
-            const { adminId } = req.params;
+            const {adminId} = req.params;
 
             const admin = await this.adminService.getAdminProfile(Number(adminId));
 
@@ -92,20 +92,19 @@ export class AdminController {
             // @ts-ignore
             if (error.message === "Admin not found") {
                 // @ts-ignore
-                res.status(404).json({ error: error.message });
+                res.status(404).json({error: error.message});
             } else {
-                res.status(500).json({ error: "Internal Server Error" });
+                res.status(500).json({error: "Internal Server Error"});
             }
         }
     }
 
     private async searchUsers(req: Request, res: Response): Promise<void> {
         try {
-            const { role, name, email } = req.query;
+            const {role, name, email} = req.query;
 
-            // Validate query parameters
             if (!role && !name && !email) {
-                res.status(400).json({ error: "At least one search parameter (role, name, or email) is required." });
+                res.status(400).json({error: "At least one search parameter (role, name, or email) is required."});
                 return;
             }
 
@@ -118,7 +117,7 @@ export class AdminController {
             res.status(200).json(users);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to search users: ${error.message}` });
+            res.status(500).json({error: `Failed to search users: ${error.message}`});
         }
     }
 }

@@ -1,10 +1,11 @@
-import { Service } from "typedi";
-import { AdminRepository } from "./admin.repository";
-import { AdminModel } from "./admin.model";
+import {Service} from "typedi";
+import {AdminRepository} from "./admin.repository";
+import {AdminModel} from "./admin.model";
 
 @Service()
 export class AdminService {
-    constructor(private readonly adminRepository: AdminRepository) {}
+    constructor(private readonly adminRepository: AdminRepository) {
+    }
 
     async createAdmin(name: string, email: string, password: string): Promise<AdminModel> {
         const existingAdmin = await this.adminRepository.findByEmail(email);
@@ -13,7 +14,7 @@ export class AdminService {
             throw new Error("Admin with this email already exists");
         }
 
-        const admin: AdminModel = { name, email, password };
+        const admin: AdminModel = {name, email, password};
         return await this.adminRepository.create(admin);
     }
 

@@ -15,11 +15,10 @@ export class PatientController {
                 private readonly medicalRecordService: MedicalRecordService,
                 private readonly doctorService: DoctorService,
     ) {
-        // Define routes
         this.patientRouter.post('/', this.create.bind(this));
 
         this.patientRouter.put('/:patientId', this.update.bind(this));
-        this.patientRouter.get('/:patientId',this.getProfile.bind(this));
+        this.patientRouter.get('/:patientId', this.getProfile.bind(this));
         this.patientRouter.get('/:patientId/appointment', this.getAppointments.bind(this));
         this.patientRouter.get("/:patientId/medical-record", this.getMedicalRecordByPatientId.bind(this));
         this.patientRouter.get("/:specialtyId/doctors", this.searchDoctors.bind(this));
@@ -39,13 +38,11 @@ export class PatientController {
         try {
             const {name, email, password, dateOfBirth, address} = req.body;
 
-            // Validate required fields
             if (!name || !email || !password || !dateOfBirth || !address) {
                 res.status(400).json({error: "All fields are required"});
                 return;
             }
 
-            // Call the service to create a new patient
             const patient: PatientModel = await this.patientService.create({
                 name,
                 email,
@@ -54,7 +51,6 @@ export class PatientController {
                 address
             });
 
-            // Respond with the newly created patient
             res.status(201).json({
                 id: patient.id,
                 name: patient.name,
@@ -63,10 +59,8 @@ export class PatientController {
                 address: patient.address
             });
         } catch (error) {
-            // Log the error (optional)
             console.error("Error creating patient:", error);
 
-            // Send an appropriate error response
             res.status(500).json({error: "Failed to create patient"});
         }
     }
@@ -109,41 +103,39 @@ export class PatientController {
             const patientId = parseInt(req.params.patientId, 10);
 
             if (!patientId || isNaN(patientId)) {
-                res.status(400).json({ error: "Invalid patient ID" });
+                res.status(400).json({error: "Invalid patient ID"});
                 return;
             }
 
             const medicalRecords = await this.medicalRecordService.getByPatientId(patientId);
 
             if (medicalRecords.length === 0) {
-                res.status(404).json({ error: "No medical records found for this patient" });
+                res.status(404).json({error: "No medical records found for this patient"});
                 return;
             }
 
             res.status(200).json(medicalRecords);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to fetch medical records: ${error.message}` });
+            res.status(500).json({error: `Failed to fetch medical records: ${error.message}`});
         }
     }
 
     private async searchDoctors(req: Request, res: Response): Promise<void> {
         try {
-            const { availability, specialtyId, location } = req.body;
+            const {availability, specialtyId, location} = req.body;
 
-            // At least one field must be provided
             if (!availability && !specialtyId && !location) {
-                res.status(400).json({ error: "At least one search criterion is required" });
+                res.status(400).json({error: "At least one search criterion is required"});
                 return;
             }
 
-            // Call the service to filter doctors
-            const doctors = await this.doctorService.searchDoctors({ availability, specialtyId, location });
+            const doctors = await this.doctorService.searchDoctors({availability, specialtyId, location});
 
             res.status(200).json(doctors);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to search doctors: ${error.message}` });
+            res.status(500).json({error: `Failed to search doctors: ${error.message}`});
         }
     }
 }

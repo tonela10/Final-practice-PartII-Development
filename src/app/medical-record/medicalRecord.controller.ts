@@ -1,5 +1,5 @@
 import {Service} from "typedi";
-import {Router, Request, Response} from "express";
+import {Request, Response, Router} from "express";
 import {MedicalRecordService} from "./medicalRecord.service";
 import {MedicalRecordModel} from "./medicalRecord.model";
 
@@ -29,7 +29,6 @@ export class MedicalRecordController {
                 ongoingTreatments,
             } = req.body;
 
-            // Validate required fields
             if (!patientId || !doctorId || !diagnosis) {
                 res.status(400).json({error: "Missing required fields"});
                 return;

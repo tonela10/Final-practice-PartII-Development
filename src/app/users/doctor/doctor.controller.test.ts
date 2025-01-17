@@ -1,7 +1,7 @@
-import { DoctorController } from './doctor.controller';
-import { DoctorService } from './doctor.service';
-import { AvailabilityService } from '../../availability/availability.service';
-import { AppointmentService } from '../../appointment/appointment.service';
+import {DoctorController} from './doctor.controller';
+import {DoctorService} from './doctor.service';
+import {AvailabilityService} from '../../availability/availability.service';
+import {AppointmentService} from '../../appointment/appointment.service';
 
 describe('DoctorController', () => {
     let doctorController: DoctorController;
@@ -41,8 +41,16 @@ describe('DoctorController', () => {
             location: '',
         });
 
-        const req = { body: { name: 'John Doe', email: 'john@example.com', password: 'password', specialty: 1, licenseNumber: 'ABC12345' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {
+            body: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'password',
+                specialty: 1,
+                licenseNumber: 'ABC12345'
+            }
+        } as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.create(req, res);
 
@@ -68,8 +76,8 @@ describe('DoctorController', () => {
             licenseNumber: 'ABC12345',
         });
 
-        const req = { params: { doctorId: '1' }, body: { name: 'John Doe', email: 'john@example.com', specialty: 1 } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {doctorId: '1'}, body: {name: 'John Doe', email: 'john@example.com', specialty: 1}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.updateProfile(req, res);
 
@@ -92,8 +100,8 @@ describe('DoctorController', () => {
             licenseNumber: 'ABC12345',
         });
 
-        const req = { params: { doctorId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {doctorId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.getProfile(req, res);
 
@@ -115,8 +123,11 @@ describe('DoctorController', () => {
             days: ['Monday', 'Wednesday'],
         });
 
-        const req = { params: { doctorId: '1' }, body: { startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday'] } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {
+            params: {doctorId: '1'},
+            body: {startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday']}
+        } as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.setAvailability(req, res);
 
@@ -131,51 +142,51 @@ describe('DoctorController', () => {
 
     it('should get a doctor\'s availability', async () => {
         availabilityService.getAvailabilityByDoctor.mockResolvedValue([
-            { doctorId: 1, startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday'] },
+            {doctorId: 1, startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday']},
         ]);
 
-        const req = { params: { doctorId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {doctorId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.getAvailability(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith([
-            { doctorId: 1, startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday'] },
+            {doctorId: 1, startTime: '09:00', endTime: '17:00', days: ['Monday', 'Wednesday']},
         ]);
     });
 
     it('should associate a doctor with a specialty', async () => {
         doctorService.associateSpecialty.mockResolvedValue({
             doctorId: 1,
-            specialties: [{ specialtyId: 2, name: 'Cardiology', description: 'Heart specialist' }],
+            specialties: [{specialtyId: 2, name: 'Cardiology', description: 'Heart specialist'}],
         });
 
-        const req = { params: { doctorId: '1' }, body: { specialtyIds: [2] } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {doctorId: '1'}, body: {specialtyIds: [2]}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.associateSpecialty(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({
             doctorId: 1,
-            specialties: [{ specialtyId: 2, name: 'Cardiology', description: 'Heart specialist' }],
+            specialties: [{specialtyId: 2, name: 'Cardiology', description: 'Heart specialist'}],
         });
     });
 
     it('should get a doctor\'s specialties', async () => {
         doctorService.getDoctorSpecialties.mockResolvedValue([
-            { specialtyId: 1, name: 'Cardiology', description: 'Heart specialist' },
+            {specialtyId: 1, name: 'Cardiology', description: 'Heart specialist'},
         ]);
 
-        const req = { params: { doctorId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {doctorId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await doctorController.getSpecialties(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith([
-            { specialtyId: 1, name: 'Cardiology', description: 'Heart specialist' },
+            {specialtyId: 1, name: 'Cardiology', description: 'Heart specialist'},
         ]);
     });
 });

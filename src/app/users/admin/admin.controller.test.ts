@@ -1,9 +1,8 @@
 import request from 'supertest';
 import express from 'express';
-import { AdminController } from './admin.controller';
-import { AdminService } from './admin.service';
-import { UserService } from '../user.service';
-import { Service } from 'typedi';
+import {AdminController} from './admin.controller';
+import {AdminService} from './admin.service';
+import {UserService} from '../user.service';
 
 jest.mock('./admin.service');
 jest.mock('../user.service');
@@ -28,7 +27,7 @@ describe('AdminController', () => {
 
     describe('POST /api/admin', () => {
         it('should create a new admin', async () => {
-            adminService.createAdmin.mockResolvedValue({ id: 1, name: 'John Doe', email: 'john@example.com' });
+            adminService.createAdmin.mockResolvedValue({id: 1, name: 'John Doe', email: 'john@example.com'});
 
             const response = await request(app)
                 .post('/api/admin')
@@ -83,7 +82,7 @@ describe('AdminController', () => {
 
     describe('PUT /api/admin/:adminId', () => {
         it('should update an admin', async () => {
-            adminService.updateAdmin.mockResolvedValue({ id: 1, name: 'John Doe', email: 'john@example.com' });
+            adminService.updateAdmin.mockResolvedValue({id: 1, name: 'John Doe', email: 'john@example.com'});
 
             const response = await request(app)
                 .put('/api/admin/1')
@@ -135,7 +134,7 @@ describe('AdminController', () => {
 
     describe('GET /api/admin/:adminId', () => {
         it('should get an admin profile', async () => {
-            adminService.getAdminProfile.mockResolvedValue({ id: 1, name: 'John Doe', email: 'john@example.com' });
+            adminService.getAdminProfile.mockResolvedValue({id: 1, name: 'John Doe', email: 'john@example.com'});
 
             const response = await request(app).get('/api/admin/1');
 
@@ -165,9 +164,14 @@ describe('AdminController', () => {
 
     describe('GET /api/admin/searchUsers', () => {
         it('should search users by query parameters', async () => {
-            userService.searchUsers.mockResolvedValue([{ userId: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' }]);
+            userService.searchUsers.mockResolvedValue([{
+                userId: 1,
+                name: 'John Doe',
+                email: 'john@example.com',
+                role: 'Admin'
+            }]);
 
-            const response = await request(app).get('/api/admin/searchUsers').query({ role: 'Admin' });
+            const response = await request(app).get('/api/admin/searchUsers').query({role: 'Admin'});
 
             expect(response.status).toBe(200);
             expect(response.body[0].name).toBe('John Doe');
@@ -184,7 +188,7 @@ describe('AdminController', () => {
         it('should return 500 for internal server errors', async () => {
             userService.searchUsers.mockRejectedValue(new Error('Some internal error'));
 
-            const response = await request(app).get('/api/admin/searchUsers').query({ role: 'Admin' });
+            const response = await request(app).get('/api/admin/searchUsers').query({role: 'Admin'});
 
             expect(response.status).toBe(500);
             expect(response.body.error).toBe('Failed to search users: Some internal error');

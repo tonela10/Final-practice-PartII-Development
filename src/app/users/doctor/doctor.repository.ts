@@ -34,10 +34,10 @@ export class DoctorRepository {
 
         const doctor = await db.get<DoctorModel>(
             `
-            SELECT id, name, email, specialty, license_number
-            FROM doctors
-            WHERE id = ?
-        `,
+                SELECT id, name, email, specialty, license_number
+                FROM doctors
+                WHERE id = ?
+            `,
             [doctorId]
         );
 
@@ -68,8 +68,8 @@ export class DoctorRepository {
         await db.run(
             `
                 UPDATE doctors
-                SET name = ?,
-                    email = ?,
+                SET name      = ?,
+                    email     = ?,
                     specialty = ?
                 WHERE id = ?
             `,
@@ -86,12 +86,16 @@ export class DoctorRepository {
 
     async getDoctorById(doctorId: number) {
         const db = await this.databaseService.openDatabase();
-        return await db.get(`SELECT * FROM doctors WHERE id = ?`, [doctorId]);
+        return await db.get(`SELECT *
+                             FROM doctors
+                             WHERE id = ?`, [doctorId]);
     }
 
     async updateDoctorSpecialty(doctorId: number, specialtyId: number): Promise<void> {
         const db = await this.databaseService.openDatabase();
-        await db.run(`UPDATE doctors SET specialtyId = ? WHERE id = ?`, [specialtyId, doctorId]);
+        await db.run(`UPDATE doctors
+                      SET specialtyId = ?
+                      WHERE id = ?`, [specialtyId, doctorId]);
     }
 
     async searchDoctors(filters: {
@@ -123,7 +127,8 @@ export class DoctorRepository {
         }
 
         const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-        const query = `SELECT * FROM doctors ${whereClause}`;
+        const query = `SELECT *
+                       FROM doctors ${whereClause}`;
 
         return await db.all(query, parameters);
     }

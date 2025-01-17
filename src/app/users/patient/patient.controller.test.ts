@@ -1,9 +1,9 @@
-import { PatientController } from './patient.controller';
-import { PatientService } from './patient.service';
-import { AppointmentService } from '../../appointment/appointment.service';
-import { MedicalRecordService } from '../../medical-record/medicalRecord.service';
-import { DoctorService } from '../doctor/doctor.service';
-import { AppointmentStatus } from '../../appointment/utils/AppointmentStatus';
+import {PatientController} from './patient.controller';
+import {PatientService} from './patient.service';
+import {AppointmentService} from '../../appointment/appointment.service';
+import {MedicalRecordService} from '../../medical-record/medicalRecord.service';
+import {DoctorService} from '../doctor/doctor.service';
+import {AppointmentStatus} from '../../appointment/utils/AppointmentStatus';
 
 describe('PatientController', () => {
     let patientController: PatientController;
@@ -49,8 +49,16 @@ describe('PatientController', () => {
             address: '123 Main St',
         });
 
-        const req = { body: { name: 'John Doe', email: 'john@example.com', password: 'password', dateOfBirth: '1990-01-01', address: '123 Main St' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {
+            body: {
+                name: 'John Doe',
+                email: 'john@example.com',
+                password: 'password',
+                dateOfBirth: '1990-01-01',
+                address: '123 Main St'
+            }
+        } as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['create'](req, res);
 
@@ -74,8 +82,11 @@ describe('PatientController', () => {
             dateOfBirth: '1990-01-01',
         });
 
-        const req = { params: { patientId: '1' }, body: { name: 'John Doe', email: 'john@example.com', address: '123 Main St' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {
+            params: {patientId: '1'},
+            body: {name: 'John Doe', email: 'john@example.com', address: '123 Main St'}
+        } as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['update'](req, res);
 
@@ -100,8 +111,8 @@ describe('PatientController', () => {
             address: '123 Main St',
         });
 
-        const req = { params: { patientId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {patientId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['getProfile'](req, res);
 
@@ -128,8 +139,8 @@ describe('PatientController', () => {
             },
         ]);
 
-        const req = { params: { patientId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {patientId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['getAppointments'](req, res);
 
@@ -159,15 +170,15 @@ describe('PatientController', () => {
             },
         ]);
 
-        const req = { params: { patientId: '1' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {params: {patientId: '1'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['getMedicalRecordByPatientId'](req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith([
             {
-                diagnosis:"",
+                diagnosis: "",
                 doctorId: 0,
                 patientId: 1,
                 notes: 'Medical note 1',
@@ -183,14 +194,14 @@ describe('PatientController', () => {
             {
                 doctorId: 1,
                 name: 'Dr. Jane Doe',
-                specialties: [{ specialtyId: 1, name: 'Cardiology' }],
+                specialties: [{specialtyId: 1, name: 'Cardiology'}],
                 location: '123 Clinic',
                 availability: [],
             },
         ]);
 
-        const req = { body: { specialtyId: 1, location: '123 Clinic' } } as any;
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as any;
+        const req = {body: {specialtyId: 1, location: '123 Clinic'}} as any;
+        const res = {status: jest.fn().mockReturnThis(), json: jest.fn()} as any;
 
         await patientController['searchDoctors'](req, res);
 
@@ -199,7 +210,7 @@ describe('PatientController', () => {
             {
                 doctorId: 1,
                 name: 'Dr. Jane Doe',
-                specialties: [{ specialtyId: 1, name: 'Cardiology' }],
+                specialties: [{specialtyId: 1, name: 'Cardiology'}],
                 location: '123 Clinic',
                 availability: [],
             },

@@ -54,7 +54,7 @@ export class AppointmentRepository {
             `
                 UPDATE appointments
                 SET appointmentDate = ?,
-                    status = 'Rescheduled'
+                    status          = 'Rescheduled'
                 WHERE appointmentId = ?
             `,
             [newAppointmentDate, appointmentId]
@@ -64,7 +64,6 @@ export class AppointmentRepository {
             throw new Error("Appointment not found");
         }
 
-        // Retrieve the updated appointment
         const updatedAppointment = await db.get(
             `
                 SELECT *
@@ -93,13 +92,12 @@ export class AppointmentRepository {
     async getAppointmentsByDoctor(doctorId: number): Promise<AppointmentModel[]> {
         const db = await this.databaseService.openDatabase();
 
-        // Query to fetch appointments for the specified doctorId
         const rows = await db.all(
             `
-            SELECT appointmentId, patientId, doctorId, appointmentDate, reason, status
-            FROM appointments
-            WHERE doctorId = ?
-        `,
+                SELECT appointmentId, patientId, doctorId, appointmentDate, reason, status
+                FROM appointments
+                WHERE doctorId = ?
+            `,
             [doctorId]
         );
 

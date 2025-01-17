@@ -5,7 +5,10 @@
     <file url="file://$PROJECT_DIR$/src/app/availability/availability.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/app/department/department.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/app/medical-record/medicalRecord.repository.ts" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/app/specialties/specialty.repository.ts" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/app/users/admin/admin.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/app/users/doctor/doctor.repository.ts" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/app/users/patient/patient.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/database/database.service.ts" dialect="GenericSQL" />
   </component>
 </project>

@@ -4,11 +4,14 @@ import {Service} from "typedi";
 
 @Service()
 export class PatientRepository {
-    constructor(private readonly databaseService: DatabaseService) {}
+    constructor(private readonly databaseService: DatabaseService) {
+    }
 
     async findByName(name: string): Promise<PatientModel | null> {
         const query = {
-            sql: `SELECT * FROM patients WHERE name = ?`,
+            sql: `SELECT *
+                  FROM patients
+                  WHERE name = ?`,
             params: [name],
         };
         const result = await this.databaseService.execQuery(query);
@@ -17,7 +20,9 @@ export class PatientRepository {
 
     async findById(patientId: number): Promise<PatientModel | null> {
         const query = {
-            sql: `SELECT * FROM patients WHERE id = ?`,
+            sql: `SELECT *
+                  FROM patients
+                  WHERE id = ?`,
             params: [patientId],
         };
         const result = await this.databaseService.execQuery(query);
@@ -50,7 +55,9 @@ export class PatientRepository {
         const query = {
             sql: `
                 UPDATE patients
-                SET name = ?, email = ?, address = ?
+                SET name    = ?,
+                    email   = ?,
+                    address = ?
                 WHERE id = ?
             `,
             params: [updatedPatient.name, updatedPatient.email, updatedPatient.address, patientId],

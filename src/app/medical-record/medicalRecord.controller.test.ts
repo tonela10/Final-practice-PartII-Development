@@ -33,7 +33,7 @@ describe('MedicalRecordController', () => {
                 diagnosis: 'Flu',
                 prescriptions: ['Medicine A'],
                 notes: 'Patient is recovering',
-                testResults: [{ testName: 'Blood Test', result: 'Positive', date: '2025-01-01' }],
+                testResults: [{testName: 'Blood Test', result: 'Positive', date: '2025-01-01'}],
                 ongoingTreatments: ['Treatment A'],
             };
 
@@ -49,19 +49,19 @@ describe('MedicalRecordController', () => {
         });
 
         it('should return status 400 if required fields are missing', async () => {
-            req.body = { doctorId: 1, diagnosis: 'Flu' }; // Missing patientId
+            req.body = {doctorId: 1, diagnosis: 'Flu'};
 
             await medicalRecordController['create'](req as Request, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ error: 'Missing required fields' });
+            expect(res.json).toHaveBeenCalledWith({error: 'Missing required fields'});
         });
 
         it('should return 500 status on error', async () => {
             const error = new Error('Database error');
             medicalRecordService.create.mockRejectedValue(error);
 
-            req.body = { patientId: 1, doctorId: 1, diagnosis: 'Flu' };
+            req.body = {patientId: 1, doctorId: 1, diagnosis: 'Flu'};
 
             await medicalRecordController['create'](req as Request, res as Response);
 
@@ -75,26 +75,26 @@ describe('MedicalRecordController', () => {
     describe('update', () => {
         it('should update a medical record and return status 200', async () => {
             const updatedRecord: Partial<MedicalRecordModel> = {
-                diagnosis: 'Cold',  // Ensure this is a valid string
+                diagnosis: 'Cold',
                 prescriptions: ['Medicine B'],
-                testResults: [{ testName: 'X-Ray', result: 'Normal', date: '2025-01-02' }],
+                testResults: [{testName: 'X-Ray', result: 'Normal', date: '2025-01-02'}],
             };
 
             const mockUpdatedRecord: MedicalRecordModel = {
                 recordId: 1,
                 patientId: 1,
                 doctorId: 1,
-                diagnosis: 'Cold', // Ensure this is a valid string
+                diagnosis: 'Cold',
                 prescriptions: ['Medicine B'],
                 notes: 'Patient is recovering',
-                testResults: [{ testName: 'X-Ray', result: 'Normal', date: '2025-01-02' }],
+                testResults: [{testName: 'X-Ray', result: 'Normal', date: '2025-01-02'}],
                 ongoingTreatments: ['Treatment A'],
                 createdAt: '2025-01-10',
             };
 
             medicalRecordService.update.mockResolvedValue(mockUpdatedRecord);
 
-            req.params = { recordId: '1' };
+            req.params = {recordId: '1'};
             req.body = updatedRecord;
 
             await medicalRecordController['update'](req as Request, res as Response);
@@ -105,20 +105,20 @@ describe('MedicalRecordController', () => {
         });
 
         it('should return status 400 if recordId is invalid', async () => {
-            req.params = { recordId: 'invalid' };
+            req.params = {recordId: 'invalid'};
 
             await medicalRecordController['update'](req as Request, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(500);
-            expect(res.json).toHaveBeenCalledWith({ error: 'Failed to update medical record: Cannot destructure property \'diagnosis\' of \'req.body\' as it is undefined.' });
+            expect(res.json).toHaveBeenCalledWith({error: 'Failed to update medical record: Cannot destructure property \'diagnosis\' of \'req.body\' as it is undefined.'});
         });
 
         it('should return 500 status on error', async () => {
             const error = new Error('Database error');
             medicalRecordService.update.mockRejectedValue(error);
 
-            req.params = { recordId: '1' };
-            req.body = { diagnosis: 'Cold' };
+            req.params = {recordId: '1'};
+            req.body = {diagnosis: 'Cold'};
 
             await medicalRecordController['update'](req as Request, res as Response);
 
@@ -138,13 +138,13 @@ describe('MedicalRecordController', () => {
                 diagnosis: 'Flu',
                 prescriptions: ['Medicine A'],
                 notes: 'Patient is recovering',
-                testResults: [{ testName: 'Blood Test', result: 'Positive', date: '2025-01-01' }],
+                testResults: [{testName: 'Blood Test', result: 'Positive', date: '2025-01-01'}],
                 ongoingTreatments: ['Treatment A'],
             };
 
             medicalRecordService.getById.mockResolvedValue(mockRecord);
 
-            req.params = { recordId: '1' };
+            req.params = {recordId: '1'};
 
             await medicalRecordController['getById'](req as Request, res as Response);
 
@@ -154,30 +154,30 @@ describe('MedicalRecordController', () => {
         });
 
         it('should return status 400 if recordId is invalid', async () => {
-            req.params = { recordId: 'invalid' };
+            req.params = {recordId: 'invalid'};
 
             await medicalRecordController['getById'](req as Request, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(400);
-            expect(res.json).toHaveBeenCalledWith({ error: 'Invalid record ID' });
+            expect(res.json).toHaveBeenCalledWith({error: 'Invalid record ID'});
         });
 
         it('should return status 404 if medical record is not found', async () => {
             medicalRecordService.getById.mockResolvedValue(null);
 
-            req.params = { recordId: '1' };
+            req.params = {recordId: '1'};
 
             await medicalRecordController['getById'](req as Request, res as Response);
 
             expect(res.status).toHaveBeenCalledWith(404);
-            expect(res.json).toHaveBeenCalledWith({ error: 'Medical record not found' });
+            expect(res.json).toHaveBeenCalledWith({error: 'Medical record not found'});
         });
 
         it('should return 500 status on error', async () => {
             const error = new Error('Database error');
             medicalRecordService.getById.mockRejectedValue(error);
 
-            req.params = { recordId: '1' };
+            req.params = {recordId: '1'};
 
             await medicalRecordController['getById'](req as Request, res as Response);
 

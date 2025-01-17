@@ -1,18 +1,19 @@
-import { Service } from "typedi";
-import { DatabaseService } from "../../../database/database.service";
-import { AdminModel } from "./admin.model";
+import {Service} from "typedi";
+import {DatabaseService} from "../../../database/database.service";
+import {AdminModel} from "./admin.model";
 
 @Service()
 export class AdminRepository {
-    constructor(private readonly databaseService: DatabaseService) {}
+    constructor(private readonly databaseService: DatabaseService) {
+    }
 
     async create(admin: AdminModel): Promise<AdminModel> {
         const db = await this.databaseService.openDatabase();
         const result = await db.run(
             `
-            INSERT INTO admins (name, email, password)
-            VALUES (?, ?, ?)
-        `,
+                INSERT INTO admins (name, email, password)
+                VALUES (?, ?, ?)
+            `,
             [admin.name, admin.email, admin.password]
         );
 
@@ -28,10 +29,11 @@ export class AdminRepository {
 
         const result = await db.run(
             `
-        UPDATE admins
-        SET name = ?, email = ?
-        WHERE id = ?
-    `,
+                UPDATE admins
+                SET name = ?,
+                    email = ?
+                WHERE id = ?
+            `,
             [name, email, adminId]
         );
 
@@ -51,10 +53,10 @@ export class AdminRepository {
         const db = await this.databaseService.openDatabase();
         const admin = await db.get<AdminModel>(
             `
-            SELECT id, name, email, password
-            FROM admins
-            WHERE email = ?
-        `,
+                SELECT id, name, email, password
+                FROM admins
+                WHERE email = ?
+            `,
             [email]
         );
 
@@ -66,10 +68,10 @@ export class AdminRepository {
 
         const row = await db.get(
             `
-        SELECT id, name, email
-        FROM admins
-        WHERE id = ?
-    `,
+                SELECT id, name, email
+                FROM admins
+                WHERE id = ?
+            `,
             [adminId]
         );
 

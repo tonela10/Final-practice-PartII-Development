@@ -1,6 +1,6 @@
-import { Service } from "typedi";
-import { Router, Request, Response } from "express";
-import { SpecialtyService } from "./specialty.service";
+import {Service} from "typedi";
+import {Request, Response, Router} from "express";
+import {SpecialtyService} from "./specialty.service";
 
 @Service()
 export class SpecialtyController {
@@ -20,7 +20,7 @@ export class SpecialtyController {
             res.status(200).json(specialties);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to fetch specialties: ${error.message}` });
+            res.status(500).json({error: `Failed to fetch specialties: ${error.message}`});
         }
     }
 }

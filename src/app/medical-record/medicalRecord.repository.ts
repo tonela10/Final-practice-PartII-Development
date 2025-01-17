@@ -10,7 +10,6 @@ export class MedicalRecordRepository {
     async create(record: MedicalRecordModel): Promise<MedicalRecordModel> {
         const db = await this.databaseService.openDatabase();
 
-        // Insert the main medical record
         const result = await db.run(
             `
                 INSERT INTO medical_records (patientId, doctorId, diagnosis, prescriptions, notes, ongoingTreatments,
@@ -30,7 +29,6 @@ export class MedicalRecordRepository {
 
         const recordId = result.lastID;
 
-        // Insert test results
         for (const testResult of record.testResults) {
             await db.run(
                 `
@@ -51,7 +49,6 @@ export class MedicalRecordRepository {
     async update(recordId: number, updates: Partial<MedicalRecordModel>): Promise<MedicalRecordModel> {
         const db = await this.databaseService.openDatabase();
 
-        // Update the main medical record
         await db.run(
             `
                 UPDATE medical_records
@@ -72,12 +69,10 @@ export class MedicalRecordRepository {
             ]
         );
 
-        // Delete old test results
         await db.run(`DELETE
                       FROM test_results
                       WHERE recordId = ?`, [recordId]);
 
-        // Insert updated test results
         for (const testResult of updates.testResults || []) {
             await db.run(
                 `
@@ -88,7 +83,6 @@ export class MedicalRecordRepository {
             );
         }
 
-        // Retrieve the updated record
         const updatedRecord = await db.get(
             `SELECT *
              FROM medical_records
@@ -115,7 +109,6 @@ export class MedicalRecordRepository {
     async getById(recordId: number): Promise<MedicalRecordModel | null> {
         const db = await this.databaseService.openDatabase();
 
-        // Fetch the main medical record
         const medicalRecord = await db.get(
             `SELECT *
              FROM medical_records
@@ -127,7 +120,6 @@ export class MedicalRecordRepository {
             return null; // Record not found
         }
 
-        // Fetch associated test results
         const testResults: TestResult[] = await db.all(
             `SELECT testName, result, date
              FROM test_results
@@ -146,7 +138,6 @@ export class MedicalRecordRepository {
     async getByPatientId(patientId: number): Promise<MedicalRecordModel[]> {
         const db = await this.databaseService.openDatabase();
 
-        // Fetch the main medical records
         const medicalRecords = await db.all(
             `SELECT * FROM medical_records WHERE patientId = ?`,
             [patientId]
@@ -156,7 +147,6 @@ export class MedicalRecordRepository {
             return []; // No records found
         }
 
-        // Fetch associated test results for each medical record
         return await Promise.all(
             medicalRecords.map(async (record: any) => {
                 const testResults: TestResult[] = await db.all(

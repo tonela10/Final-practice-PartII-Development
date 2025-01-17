@@ -1,6 +1,6 @@
-import { SpecialtyController } from './specialty.controller';
-import { SpecialtyService } from './specialty.service';
-import { Request, Response } from 'express';
+import {SpecialtyController} from './specialty.controller';
+import {SpecialtyService} from './specialty.service';
+import {Request, Response} from 'express';
 
 describe('SpecialtyController', () => {
     let specialtyController: SpecialtyController;
@@ -25,8 +25,8 @@ describe('SpecialtyController', () => {
     describe('getAll', () => {
         it('should return a list of specialties with status 200', async () => {
             const mockSpecialties = [
-                { specialtyId: 1, name: 'Cardiology', description: 'Heart specialist' },
-                { specialtyId: 2, name: 'Neurology', description: 'Brain and nervous system specialist' },
+                {specialtyId: 1, name: 'Cardiology', description: 'Heart specialist'},
+                {specialtyId: 2, name: 'Neurology', description: 'Brain and nervous system specialist'},
             ];
             specialtyService.getAll.mockResolvedValue(mockSpecialties);
 

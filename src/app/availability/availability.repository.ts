@@ -24,14 +24,13 @@ export class AvailabilityRepository {
 
         return {
             ...availability,
-            availabilityId: result.lastID,  // Get the ID of the newly inserted availability
+            availabilityId: result.lastID,
         };
     }
 
     async getAvailabilityByDoctor(doctorId: number): Promise<AvailabilityModel[]> {
         const db = await this.databaseService.openDatabase();
 
-        // Query to fetch availability for the specified doctorId
         const rows = await db.all(
             `
             SELECT availabilityId, startTime, endTime, days
@@ -41,13 +40,12 @@ export class AvailabilityRepository {
             [doctorId]
         );
 
-        // Map rows to AvailabilityModel format
         return rows.map((row: any) => ({
             availabilityId: row.availabilityId,
             doctorId,
             startTime: row.startTime,
             endTime: row.endTime,
-            days: JSON.parse(row.days),  // Parse the stored JSON string back into an array
+            days: JSON.parse(row.days),
         }));
     }
 

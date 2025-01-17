@@ -1,9 +1,8 @@
 import {json, urlencoded} from 'body-parser';
-import {Application} from 'express';
+import express, {Application} from 'express';
 import {Service} from 'typedi';
 
 import cors from 'cors';
-import express from 'express';
 import morgan from 'morgan';
 
 import {Api} from './api/api';
