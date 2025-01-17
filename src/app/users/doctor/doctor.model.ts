@@ -5,4 +5,5 @@ export interface DoctorModel {
     password: string;     // Hashed password for security
     specialty: number;    // Medical specialty
     licenseNumber: string; // Unique medical license number
+    location: string;
 }

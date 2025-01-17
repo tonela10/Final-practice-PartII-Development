@@ -71,7 +71,8 @@ export class DatabaseService {
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             speialtyId INTEGER NOT NULL,
-            license_number TEXT NOT NULL UNIQUE
+            license_number TEXT NOT NULL UNIQUE,
+            location TEXT NOT NULL,
         );
     `);
 

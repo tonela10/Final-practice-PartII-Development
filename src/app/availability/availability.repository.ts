@@ -50,4 +50,24 @@ export class AvailabilityRepository {
             days: JSON.parse(row.days),  // Parse the stored JSON string back into an array
         }));
     }
+
+    async getAvailabilityByDoctorId(doctorId: number): Promise<
+        { day: string; startTime: string; endTime: string }[]
+    > {
+        const db = await this.databaseService.openDatabase();
+
+        const query = `
+            SELECT day, startTime, endTime
+            FROM availability
+            WHERE doctorId = ?;
+        `;
+
+        const rows = await db.all(query, [doctorId]);
+
+        return rows.map((row) => ({
+            day: row.day,
+            startTime: row.startTime,
+            endTime: row.endTime,
+        }));
+    }
 }

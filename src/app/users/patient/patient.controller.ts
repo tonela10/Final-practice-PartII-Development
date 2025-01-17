@@ -22,7 +22,7 @@ export class PatientController {
         this.patientRouter.get('/:patientId',this.getProfile.bind(this));
         this.patientRouter.get('/:patientId/appointment', this.getAppointments.bind(this));
         this.patientRouter.get("/:patientId/medical-record", this.getMedicalRecordByPatientId.bind(this));
-        this.patientRouter.get("/:specialtyId/doctors", this.getDoctorsBySpecialty.bind(this));
+        this.patientRouter.get("/:specialtyId/doctors", this.searchDoctors.bind(this));
 
     }
 
@@ -127,24 +127,23 @@ export class PatientController {
         }
     }
 
-    private async getDoctorsBySpecialty(req: Request, res: Response): Promise<void> {
+    private async searchDoctors(req: Request, res: Response): Promise<void> {
         try {
-            const { specialtyId } = req.params;
+            const { availability, specialtyId, location } = req.body;
 
-            // Validate specialtyId
-            const specialtyIdInt = parseInt(specialtyId, 10);
-            if (!isNaN(specialtyIdInt) && specialtyIdInt < 1) {
-                res.status(400).json({ error: "Invalid specialty ID" });
+            // At least one field must be provided
+            if (!availability && !specialtyId && !location) {
+                res.status(400).json({ error: "At least one search criterion is required" });
                 return;
             }
 
-            // Fetch doctors filtered by specialty
-            const doctors = await this.doctorService.getDoctorsBySpecialty(specialtyIdInt);
+            // Call the service to filter doctors
+            const doctors = await this.doctorService.searchDoctors({ availability, specialtyId, location });
 
             res.status(200).json(doctors);
         } catch (error) {
             // @ts-ignore
-            res.status(500).json({ error: `Failed to retrieve doctors: ${error.message}` });
+            res.status(500).json({ error: `Failed to search doctors: ${error.message}` });
         }
     }
 }

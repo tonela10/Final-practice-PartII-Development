@@ -86,8 +86,7 @@ export class DoctorRepository {
 
     async getDoctorById(doctorId: number) {
         const db = await this.databaseService.openDatabase();
-        const doctor = await db.get(`SELECT * FROM doctors WHERE id = ?`, [doctorId]);
-        return doctor;
+        return await db.get(`SELECT * FROM doctors WHERE id = ?`, [doctorId]);
     }
 
     async updateDoctorSpecialty(doctorId: number, specialtyId: number): Promise<void> {
@@ -95,16 +94,39 @@ export class DoctorRepository {
         await db.run(`UPDATE doctors SET specialtyId = ? WHERE id = ?`, [specialtyId, doctorId]);
     }
 
-    async getDoctorsBySpecialty(specialtyId?: number) {
+    async searchDoctors(filters: {
+        availability?: { day: string; startTime: string; endTime: string }[];
+        specialtyId?: number;
+        location?: string;
+    }) {
         const db = await this.databaseService.openDatabase();
 
-        if (specialtyId) {
-            // Filter doctors by specialtyId
-            return await db.all(`SELECT id, name, email, specialtyId FROM doctors WHERE specialtyId = ?`, [specialtyId]);
+        const conditions: string[] = [];
+        const parameters: any[] = [];
+
+        if (filters.specialtyId) {
+            conditions.push("specialtyId = ?");
+            parameters.push(filters.specialtyId);
         }
 
-        // If no specialtyId provided, return all doctors
-        return await db.all(`SELECT id, name, email, specialtyId FROM doctors`);
+        if (filters.location) {
+            conditions.push("location LIKE ?");
+            parameters.push(`%${filters.location}%`);
+        }
+
+        if (filters.availability) {
+            const availabilityFilters = filters.availability.map(() => "(day = ? AND startTime >= ? AND endTime <= ?)");
+            conditions.push(availabilityFilters.join(" OR "));
+            filters.availability.forEach((slot) => {
+                parameters.push(slot.day, slot.startTime, slot.endTime);
+            });
+        }
+
+        const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+        const query = `SELECT * FROM doctors ${whereClause}`;
+
+        return await db.all(query, parameters);
     }
+
 
 }

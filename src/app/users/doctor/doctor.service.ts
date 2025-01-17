@@ -2,12 +2,14 @@ import {Service} from "typedi";
 import {DoctorRepository} from "./doctor.repository";
 import {DoctorModel} from "./doctor.model";
 import {SpecialtyRepository} from "../../specialties/specialty.repository";
+import {AvailabilityRepository} from "../../availability/availability.repository";
 
 @Service()
 export class DoctorService {
     constructor(
         private readonly doctorRepository: DoctorRepository,
         private readonly specialtyRepository: SpecialtyRepository,
+        private readonly availabilityRepository: AvailabilityRepository,
         ) {}
 
     async create(doctorData: DoctorModel): Promise<DoctorModel> {
@@ -80,31 +82,31 @@ export class DoctorService {
             : [];
     }
 
-    async getDoctorsBySpecialty(specialtyId?: number) {
-        // Fetch doctors from the repository
-        const doctors = await this.doctorRepository.getDoctorsBySpecialty(specialtyId);
+    async searchDoctors(filters: {
+        availability?: { day: string; startTime: string; endTime: string }[];
+        specialtyId?: number;
+        location?: string;
+    }) {
+        const { availability, specialtyId, location } = filters;
 
-        // Map results with specialty details
-        const doctorList = await Promise.all(
+        // Fetch doctors matching criteria
+        const doctors = await this.doctorRepository.searchDoctors(filters);
+
+        // Include availability and specialty details
+        return await Promise.all(
             doctors.map(async (doctor) => {
+                const availability = await this.availabilityRepository.getAvailabilityByDoctorId(doctor.id!);
                 const specialty = await this.specialtyRepository.getSpecialtyById(doctor.specialtyId);
 
                 return {
                     doctorId: doctor.id,
                     name: doctor.name,
-                    email: doctor.email,
-                    specialties: specialty
-                        ? [
-                            {
-                                specialtyId: specialty.specialtyId,
-                                name: specialty.name,
-                            },
-                        ]
-                        : [],
+                    availability,
+                    specialties: specialty ? [{specialtyId: specialty.specialtyId, name: specialty.name}] : [],
+                    location: doctor.location,
                 };
             })
         );
-
-        return doctorList;
     }
+
 }
