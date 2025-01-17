@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/src/app/appointment/appointment.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/app/department/department.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/app/medical-record/medicalRecord.repository.ts" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/app/users/doctor/doctor.repository.ts" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/database/database.service.ts" dialect="GenericSQL" />
   </component>
 </project>

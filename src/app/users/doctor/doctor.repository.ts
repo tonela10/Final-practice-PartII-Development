@@ -84,5 +84,14 @@ export class DoctorRepository {
         return doctor;
     }
 
+    async getDoctorById(doctorId: number) {
+        const db = await this.databaseService.openDatabase();
+        const doctor = await db.get(`SELECT * FROM doctors WHERE id = ?`, [doctorId]);
+        return doctor;
+    }
 
+    async updateDoctorSpecialty(doctorId: number, specialtyId: number): Promise<void> {
+        const db = await this.databaseService.openDatabase();
+        await db.run(`UPDATE doctors SET specialtyId = ? WHERE id = ?`, [specialtyId, doctorId]);
+    }
 }

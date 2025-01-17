@@ -22,6 +22,8 @@ export class DoctorController {
         this.doctorRouter.get('/:doctorId/availability', this.getAvailability.bind(this));
 
         this.doctorRouter.get('/:doctorId/appointment', this.getAppointments.bind(this));
+
+        this.doctorRouter.get('/:doctorId/specialties', this.associateSpecialty.bind(this));
     }
 
     getRouter(): Router {
@@ -173,4 +175,35 @@ export class DoctorController {
             res.status(500).json({error: `Failed to retrieve appointments: ${error.message}`});
         }
     }
+
+    private async associateSpecialty(req: Request, res: Response): Promise<void> {
+        try {
+            const { doctorId } = req.params;
+            const { specialtyIds } = req.body;
+
+            // Validate input
+            if (!doctorId || !specialtyIds || !Array.isArray(specialtyIds) || specialtyIds.length !== 1) {
+                res.status(400).json({ error: "Doctor can be associated with exactly one specialty." });
+                return;
+            }
+
+            // Convert `doctorId` and `specialtyId` to integers
+            const doctorIdInt = parseInt(doctorId, 10);
+            const specialtyId = parseInt(specialtyIds[0], 10);
+
+            if (isNaN(doctorIdInt) || isNaN(specialtyId)) {
+                res.status(400).json({ error: "Invalid doctorId or specialtyId." });
+                return;
+            }
+
+            // Associate the doctor with the specialty
+            const result = await this.doctorService.associateSpecialty(doctorIdInt, specialtyId);
+
+            res.status(200).json(result);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to associate specialty: ${error.message}` });
+        }
+    }
+
 }

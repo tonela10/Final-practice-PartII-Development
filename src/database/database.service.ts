@@ -145,7 +145,6 @@ export class DatabaseService {
             description TEXT
     );
 `);
-
         await this.closeDatabase();
     }
 }

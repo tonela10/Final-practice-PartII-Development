@@ -1,10 +1,14 @@
 import {Service} from "typedi";
 import {DoctorRepository} from "./doctor.repository";
 import {DoctorModel} from "./doctor.model";
+import {SpecialtyRepository} from "../../specialties/specialty.repository";
 
 @Service()
 export class DoctorService {
-    constructor(private readonly doctorRepository: DoctorRepository) {}
+    constructor(
+        private readonly doctorRepository: DoctorRepository,
+        private readonly specialtyRepository: SpecialtyRepository,
+        ) {}
 
     async create(doctorData: DoctorModel): Promise<DoctorModel> {
         const existingEmail = await this.doctorRepository.findByEmail(doctorData.email);
@@ -30,5 +34,28 @@ export class DoctorService {
             throw new Error("Doctor not found");
         }
         return doctor;
+    }
+
+    async associateSpecialty(doctorId: number, specialtyId: number) {
+        // Ensure the doctor exists
+        const doctor = await this.doctorRepository.getDoctorById(doctorId);
+        if (!doctor) {
+            throw new Error("Doctor not found.");
+        }
+
+        // Ensure the specialty exists
+        const specialty = await this.specialtyRepository.getSpecialtyById(specialtyId);
+        if (!specialty) {
+            throw new Error("Specialty not found.");
+        }
+
+        // Associate the doctor with the specialty
+        await this.doctorRepository.updateDoctorSpecialty(doctorId, specialtyId);
+
+        // Return the updated association
+        return {
+            doctorId,
+            specialties: [specialty],
+        };
     }
 }
