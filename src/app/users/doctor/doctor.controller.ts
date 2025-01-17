@@ -23,7 +23,8 @@ export class DoctorController {
 
         this.doctorRouter.get('/:doctorId/appointment', this.getAppointments.bind(this));
 
-        this.doctorRouter.get('/:doctorId/specialties', this.associateSpecialty.bind(this));
+        this.doctorRouter.post('/:doctorId/specialties', this.associateSpecialty.bind(this));
+        this.doctorRouter.get('/:doctorId/specialties',this.getSpecialties.bind(this));
     }
 
     getRouter(): Router {
@@ -206,4 +207,24 @@ export class DoctorController {
         }
     }
 
+    private async getSpecialties(req: Request, res: Response): Promise<void> {
+        try {
+            const { doctorId } = req.params;
+
+            // Validate doctorId
+            const doctorIdInt = parseInt(doctorId, 10);
+            if (isNaN(doctorIdInt)) {
+                res.status(400).json({ error: "Invalid doctor ID" });
+                return;
+            }
+
+            // Get specialties for the doctor
+            const specialties = await this.doctorService.getDoctorSpecialties(doctorIdInt);
+
+            res.status(200).json(specialties);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to retrieve specialties: ${error.message}` });
+        }
+    }
 }

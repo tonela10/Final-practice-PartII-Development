@@ -58,4 +58,26 @@ export class DoctorService {
             specialties: [specialty],
         };
     }
+    
+    async getDoctorSpecialties(doctorId: number) {
+        // Ensure the doctor exists
+        const doctor = await this.doctorRepository.getDoctorById(doctorId);
+        if (!doctor) {
+            throw new Error("Doctor not found.");
+        }
+
+        // Fetch the associated specialty
+        const specialty = await this.specialtyRepository.getSpecialtyById(doctor.specialtyId);
+
+        return specialty
+            ? [
+                {
+                    specialtyId: specialty.specialtyId,
+                    name: specialty.name,
+                    description: specialty.description,
+                },
+            ]
+            : [];
+    }
+
 }
