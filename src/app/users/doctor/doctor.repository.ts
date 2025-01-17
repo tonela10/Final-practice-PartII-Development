@@ -94,4 +94,17 @@ export class DoctorRepository {
         const db = await this.databaseService.openDatabase();
         await db.run(`UPDATE doctors SET specialtyId = ? WHERE id = ?`, [specialtyId, doctorId]);
     }
+
+    async getDoctorsBySpecialty(specialtyId?: number) {
+        const db = await this.databaseService.openDatabase();
+
+        if (specialtyId) {
+            // Filter doctors by specialtyId
+            return await db.all(`SELECT id, name, email, specialtyId FROM doctors WHERE specialtyId = ?`, [specialtyId]);
+        }
+
+        // If no specialtyId provided, return all doctors
+        return await db.all(`SELECT id, name, email, specialtyId FROM doctors`);
+    }
+
 }

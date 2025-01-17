@@ -4,6 +4,7 @@ import {PatientService} from "./patient.service";
 import {PatientModel} from "./patient.model";
 import {AppointmentService} from "../../appointment/appointment.service";
 import {MedicalRecordService} from "../../medical-record/medicalRecord.service";
+import {DoctorService} from "../doctor/doctor.service";
 
 @Service()
 export class PatientController {
@@ -12,14 +13,17 @@ export class PatientController {
     constructor(private readonly patientService: PatientService,
                 private readonly appointmentService: AppointmentService,
                 private readonly medicalRecordService: MedicalRecordService,
+                private readonly doctorService: DoctorService,
     ) {
         // Define routes
         this.patientRouter.post('/', this.create.bind(this));
+
         this.patientRouter.put('/:patientId', this.update.bind(this));
         this.patientRouter.get('/:patientId',this.getProfile.bind(this));
-
         this.patientRouter.get('/:patientId/appointment', this.getAppointments.bind(this));
         this.patientRouter.get("/:patientId/medical-record", this.getMedicalRecordByPatientId.bind(this));
+        this.patientRouter.get("/:specialtyId/doctors", this.getDoctorsBySpecialty.bind(this));
+
     }
 
     getRouter(): Router {
@@ -120,6 +124,27 @@ export class PatientController {
         } catch (error) {
             // @ts-ignore
             res.status(500).json({ error: `Failed to fetch medical records: ${error.message}` });
+        }
+    }
+
+    private async getDoctorsBySpecialty(req: Request, res: Response): Promise<void> {
+        try {
+            const { specialtyId } = req.params;
+
+            // Validate specialtyId
+            const specialtyIdInt = parseInt(specialtyId, 10);
+            if (!isNaN(specialtyIdInt) && specialtyIdInt < 1) {
+                res.status(400).json({ error: "Invalid specialty ID" });
+                return;
+            }
+
+            // Fetch doctors filtered by specialty
+            const doctors = await this.doctorService.getDoctorsBySpecialty(specialtyIdInt);
+
+            res.status(200).json(doctors);
+        } catch (error) {
+            // @ts-ignore
+            res.status(500).json({ error: `Failed to retrieve doctors: ${error.message}` });
         }
     }
 }

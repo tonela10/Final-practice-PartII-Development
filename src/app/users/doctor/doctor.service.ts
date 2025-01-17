@@ -80,4 +80,31 @@ export class DoctorService {
             : [];
     }
 
+    async getDoctorsBySpecialty(specialtyId?: number) {
+        // Fetch doctors from the repository
+        const doctors = await this.doctorRepository.getDoctorsBySpecialty(specialtyId);
+
+        // Map results with specialty details
+        const doctorList = await Promise.all(
+            doctors.map(async (doctor) => {
+                const specialty = await this.specialtyRepository.getSpecialtyById(doctor.specialtyId);
+
+                return {
+                    doctorId: doctor.id,
+                    name: doctor.name,
+                    email: doctor.email,
+                    specialties: specialty
+                        ? [
+                            {
+                                specialtyId: specialty.specialtyId,
+                                name: specialty.name,
+                            },
+                        ]
+                        : [],
+                };
+            })
+        );
+
+        return doctorList;
+    }
 }
