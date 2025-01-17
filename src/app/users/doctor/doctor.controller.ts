@@ -32,7 +32,7 @@ export class DoctorController {
         return this.doctorRouter;
     }
 
-    private async create(req: Request, res: Response): Promise<void> {
+    async create(req: Request, res: Response): Promise<void> {
         try {
             const {name, email, password, specialty, licenseNumber} = req.body;
             const doctor = await this.doctorService.create({
@@ -45,7 +45,7 @@ export class DoctorController {
         }
     }
 
-    private async updateProfile(req: Request, res: Response): Promise<void> {
+    async updateProfile(req: Request, res: Response): Promise<void> {
         try {
             const doctorId = parseInt(req.params.doctorId, 10);
             const {name, email, specialty} = req.body;
@@ -72,7 +72,7 @@ export class DoctorController {
         }
     }
 
-    private async getProfile(req: Request, res: Response): Promise<void> {
+    async getProfile(req: Request, res: Response): Promise<void> {
         try {
             const doctorId = parseInt(req.params.doctorId, 10);
 
@@ -101,7 +101,7 @@ export class DoctorController {
         }
     }
 
-    private async setAvailability(req: Request, res: Response): Promise<void> {
+    async setAvailability(req: Request, res: Response): Promise<void> {
         try {
             const {doctorId} = req.params;
             const {startTime, endTime, days} = req.body;
@@ -128,7 +128,7 @@ export class DoctorController {
         }
     }
 
-    private async getAvailability(req: Request, res: Response): Promise<void> {
+    async getAvailability(req: Request, res: Response): Promise<void> {
         try {
             const doctorId = parseInt(req.params.doctorId, 10);
 
@@ -180,7 +180,7 @@ export class DoctorController {
         }
     }
 
-    private async associateSpecialty(req: Request, res: Response): Promise<void> {
+    async associateSpecialty(req: Request, res: Response): Promise<void> {
         try {
             const { doctorId } = req.params;
             const { specialtyIds } = req.body;
@@ -210,7 +210,7 @@ export class DoctorController {
         }
     }
 
-    private async getSpecialties(req: Request, res: Response): Promise<void> {
+    async getSpecialties(req: Request, res: Response): Promise<void> {
         try {
             const { doctorId } = req.params;
 
